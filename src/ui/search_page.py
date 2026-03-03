@@ -89,13 +89,25 @@ class SearchPage(QWidget):
         layout = QVBoxLayout()
         layout.setSpacing(15)
         
-        # JCL Adı arama
-        jcl_layout = QHBoxLayout()
-        jcl_label = QLabel("JCL Adı:")
-        jcl_label.setMinimumWidth(100)
-        self.jcl_input = QLineEdit()
-        self.jcl_input.setPlaceholderText("JCL adı girin (örn: PKRBI330)")
-        self.jcl_input.setMinimumHeight(30)
+        # JCL Adı arama - ÇOK SATIRLI (TOPLU ARAMA)
+        jcl_layout = QVBoxLayout()
+        jcl_label = QLabel("JCL Adı (Toplu Arama):")
+        jcl_label_font = QFont()
+        jcl_label_font.setBold(True)
+        jcl_label.setFont(jcl_label_font)
+        
+        self.jcl_input = QTextEdit()  # QLineEdit yerine QTextEdit (çok satırlı)
+        self.jcl_input.setPlaceholderText(
+            "Her satıra bir JCL adı yazın (toplu arama):\n"
+            "PKRBI330\n"
+            "PMUAI012\n"
+            "POPGG001\n"
+            "...\n\n"
+            "Veya tek JCL için arama yapabilirsiniz"
+        )
+        self.jcl_input.setMinimumHeight(100)  # Daha büyük alan
+        self.jcl_input.setMaximumHeight(150)
+        
         jcl_layout.addWidget(jcl_label)
         jcl_layout.addWidget(self.jcl_input)
         layout.addLayout(jcl_layout)
@@ -149,10 +161,10 @@ class SearchPage(QWidget):
         
         layout = QVBoxLayout()
         
-        # Sonuç text alanı
+        # Sonuç text alanı - DAHA BÜYÜK
         self.result_text = QTextEdit()
         self.result_text.setReadOnly(True)
-        self.result_text.setMinimumHeight(200)
+        self.result_text.setMinimumHeight(400)  # 200'den 400'e çıkarıldı
         self.result_text.setPlaceholderText("Arama sonuçları burada görüntülenecek...")
         
         # Başlangıç mesajı
@@ -178,14 +190,14 @@ class SearchPage(QWidget):
         return group
     
     def _perform_search(self):
-        """Arama işlemini gerçekleştir - GERÇEKi VERI İLE"""
+        """Arama işlemini gerçekleştir - TOPLU ARAMA DESTEKLİ"""
         # Arama kriterlerin al
-        jcl_name = self.jcl_input.text().strip().upper()  # Büyük harfe çevir
+        jcl_text = self.jcl_input.toPlainText().strip().upper()  # Çok satırlı text al
         ekip = self.ekip_combo.currentText()
         excel_type = self.type_combo.currentText()
         
         # Boş arama kontrolü
-        if not jcl_name and ekip == "Tümü" and excel_type == "Tümü":
+        if not jcl_text and ekip == "Tümü" and excel_type == "Tümü":
             QMessageBox.warning(
                 self,
                 "Uyarı",
@@ -205,6 +217,12 @@ class SearchPage(QWidget):
             return
         
         try:
+            # TOPLU ARAMA: Her satırı ayrı JCL adı olarak işle
+            jcl_names = []
+            if jcl_text:
+                # Satırlara böl, boşlukları temizle, boş satırları filtrele
+                jcl_names = [line.strip() for line in jcl_text.split('\n') if line.strip()]
+            
             # Hangi DataFrame'lerde arama yapılacağını belirle
             search_in_hatali = (excel_type == "Tümü" or excel_type == "Hatalı İşler")
             search_in_uzun = (excel_type == "Tümü" or excel_type == "Uzun İşler")
@@ -215,15 +233,26 @@ class SearchPage(QWidget):
             if search_in_hatali and self.hatali_df is not None:
                 filtered = self.hatali_df.copy()
                 
-                # JCL adı filtresi
-                if jcl_name:
-                    # JCL_Adi kolonunu büyük harfe çevir ve ara
-                    filtered = filtered[
-                        filtered['JCL_Adi'].str.upper().str.contains(jcl_name, na=False)
-                    ]
+                # TOPLU JCL adı filtresi
+                if jcl_names:
+                    # Her JCL adı için arama yap ve sonuçları birleştir
+                    jcl_results = []
+                    for jcl_name in jcl_names:
+                        temp = filtered[
+                            filtered['JCL_Adi'].str.upper().str.contains(jcl_name, na=False)
+                        ]
+                        if not temp.empty:
+                            jcl_results.append(temp)
+                    
+                    if jcl_results:
+                        filtered = pd.concat(jcl_results, ignore_index=True)
+                        # Tekrar edenleri kaldır
+                        filtered = filtered.drop_duplicates()
+                    else:
+                        filtered = pd.DataFrame()  # Boş DataFrame
                 
                 # Ekip filtresi
-                if ekip != "Tümü":
+                if ekip != "Tümü" and not filtered.empty:
                     filtered = filtered[filtered['Ekip_Adi'] == ekip]
                 
                 if not filtered.empty:
@@ -233,14 +262,24 @@ class SearchPage(QWidget):
             if search_in_uzun and self.uzun_df is not None:
                 filtered = self.uzun_df.copy()
                 
-                # JCL adı filtresi
-                if jcl_name:
-                    filtered = filtered[
-                        filtered['JCL_Adi'].str.upper().str.contains(jcl_name, na=False)
-                    ]
+                # TOPLU JCL adı filtresi
+                if jcl_names:
+                    jcl_results = []
+                    for jcl_name in jcl_names:
+                        temp = filtered[
+                            filtered['JCL_Adi'].str.upper().str.contains(jcl_name, na=False)
+                        ]
+                        if not temp.empty:
+                            jcl_results.append(temp)
+                    
+                    if jcl_results:
+                        filtered = pd.concat(jcl_results, ignore_index=True)
+                        filtered = filtered.drop_duplicates()
+                    else:
+                        filtered = pd.DataFrame()
                 
                 # Ekip filtresi
-                if ekip != "Tümü":
+                if ekip != "Tümü" and not filtered.empty:
                     filtered = filtered[filtered['Ekip_Adi'] == ekip]
                 
                 if not filtered.empty:
@@ -249,11 +288,14 @@ class SearchPage(QWidget):
             # Sonuçları birleştir
             if results_list:
                 combined_results = pd.concat(results_list, ignore_index=True)
-                self._show_real_results(combined_results, jcl_name, ekip, excel_type)
+                # Toplam JCL sayısını göster
+                jcl_display = f"{len(jcl_names)} JCL" if len(jcl_names) > 1 else jcl_text
+                self._show_real_results(combined_results, jcl_display, ekip, excel_type)
             else:
                 # Boş DataFrame ile göster (sonuç bulunamadı)
                 empty_df = pd.DataFrame()
-                self._show_real_results(empty_df, jcl_name, ekip, excel_type)
+                jcl_display = f"{len(jcl_names)} JCL" if len(jcl_names) > 1 else jcl_text
+                self._show_real_results(empty_df, jcl_display, ekip, excel_type)
         
         except Exception as e:
             QMessageBox.critical(
