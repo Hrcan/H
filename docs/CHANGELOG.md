@@ -7,11 +7,6 @@
 
 ## [Unreleased] - Geliştirme Aşamasında
 
-### Planlanıyor (v1.1) - Hatalı İşler İyileştirmeleri
-- Tablo renk düzeltmesi (alternatif satır renkleri)
-- Aylık filtreleme özelliği (Ay/Yıl seçici)
-- Boş sonuç mesajı iyileştirmesi
-
 ### Planlanıyor (v1.2) - Log Sistemi ⭐ ÖNEMLİ
 - Logger modülü (dosya ve konsol)
 - Log seviyeleri (DEBUG, INFO, WARNING, ERROR)
@@ -23,6 +18,38 @@
 - Tarih/Ay global filtreleme (FAZE 7)
 - TXT dosyası desteği (FAZE 9)
 - EXE derleme (FAZE 11)
+
+---
+
+## [1.1.0] - 2026-03-03 ✅ TAMAMLANDI - İYİLEŞTİRMELER
+
+### Eklenenler ✨
+- **Aylık Filtreleme Sistemi (YENİ!)**
+  - Ay filtresi: 12 ay (Ocak-Aralık)
+  - Yıl filtresi: 2024, 2025, 2026
+  - Tarih sütunu: Son_Hatali_Calisma_Tarihi ile filtreleme
+  - Boş ay/yıl için "Filtrelere uygun sonuç bulunamadı" mesajı
+  
+- **Boş Sonuç Mesajı**
+  - "❌ Filtrelere uygun sonuç bulunamadı" kırmızı uyarı
+  - Olmayan JCL veya ay/yıl seçildiğinde görünür
+  - Tablo temizlenir, mesaj kullanıcıya gösterilir
+
+### Değiştirililer 🔄
+- **Tablo Renkleri Optimize Edildi**
+  - alternate-background-color özelliği eklendi
+  - Alternatif satırlar: #1e1e1e ve #252525
+  - Hover rengi: #333333 (daha yumuşak)
+  - Border kaldırıldı, padding optimize edildi
+  
+- **Filtreleri Temizle Butonu Güncellendi**
+  - Ay ve Yıl filtreleri de temizleniyor
+  - Tüm filtreler (JCL, Ekip, Ay, Yıl, Sıralama) sıfırlanıyor
+
+### Düzeltilenler 🐛
+- Ay/Yıl filtreleme çalışmıyordu → DÜZELTİLDİ
+- Tarih sütunu adı hatası ('Tarih' → 'Son_Hatali_Calisma_Tarihi')
+- Tablo alternatif renkleri okunmuyordu → OPTİMİZE EDİLDİ
 
 ---
 

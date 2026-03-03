@@ -115,8 +115,45 @@ class HataliIslerPage(QWidget):
         
         layout.addLayout(first_row)
         
-        # İkinci satır: Sıralama ve butonlar
+        # İkinci satır: Ay/Yıl filtresi
         second_row = QHBoxLayout()
+        
+        # Ay filtresi (YENİ! v1.1)
+        ay_label = QLabel("Ay:")
+        ay_label.setFixedWidth(100)
+        ay_label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        self.ay_filter = QComboBox()
+        self.ay_filter.addItem("Tümü")
+        self.ay_filter.addItems([
+            "Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran",
+            "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"
+        ])
+        self.ay_filter.setMinimumHeight(35)
+        self.ay_filter.setMinimumWidth(150)
+        self.ay_filter.currentTextChanged.connect(self._apply_filters)
+        
+        second_row.addWidget(ay_label)
+        second_row.addWidget(self.ay_filter)
+        
+        # Yıl filtresi (YENİ! v1.1)
+        yil_label = QLabel("Yıl:")
+        yil_label.setFixedWidth(60)
+        yil_label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        self.yil_filter = QComboBox()
+        self.yil_filter.addItem("Tümü")
+        self.yil_filter.addItems(["2024", "2025", "2026"])
+        self.yil_filter.setMinimumHeight(35)
+        self.yil_filter.setMinimumWidth(100)
+        self.yil_filter.currentTextChanged.connect(self._apply_filters)
+        
+        second_row.addWidget(yil_label)
+        second_row.addWidget(self.yil_filter)
+        second_row.addStretch()
+        
+        layout.addLayout(second_row)
+        
+        # Üçüncü satır: Sıralama ve butonlar
+        third_row = QHBoxLayout()
         
         # Sıralama
         sort_label = QLabel("Sırala:")
@@ -131,8 +168,8 @@ class HataliIslerPage(QWidget):
         self.sort_combo.setMinimumHeight(35)
         self.sort_combo.currentTextChanged.connect(self._apply_filters)
         
-        second_row.addWidget(sort_label)
-        second_row.addWidget(self.sort_combo)
+        third_row.addWidget(sort_label)
+        third_row.addWidget(self.sort_combo)
         
         # Filtreleri temizle butonu
         self.clear_btn = QPushButton("🔄 Filtreleri Temizle")
@@ -140,10 +177,10 @@ class HataliIslerPage(QWidget):
         self.clear_btn.setMaximumWidth(180)
         self.clear_btn.clicked.connect(self._clear_filters)
         
-        second_row.addWidget(self.clear_btn)
-        second_row.addStretch()
+        third_row.addWidget(self.clear_btn)
+        third_row.addStretch()
         
-        layout.addLayout(second_row)
+        layout.addLayout(third_row)
         
         # Bilgi mesajı
         info_label = QLabel("💡 İpucu: Filtreler otomatik olarak uygulanır")
@@ -175,10 +212,11 @@ class HataliIslerPage(QWidget):
         self.table.horizontalHeader().setStretchLastSection(True)  # Son sütunu genişlet
         self.table.verticalHeader().setVisible(False)  # Satır numaralarını gizle
         
-        # Modern Dark Theme Stil
+        # Modern Dark Theme Stil (OPTİMİZE EDİLDİ! v1.1)
         self.table.setStyleSheet("""
             QTableWidget {
                 background-color: #1e1e1e;
+                alternate-background-color: #252525;
                 color: #e0e0e0;
                 gridline-color: #3d3d3d;
                 border: 1px solid #3d3d3d;
@@ -186,15 +224,18 @@ class HataliIslerPage(QWidget):
                 font-size: 13px;
             }
             QTableWidget::item {
-                padding: 8px;
-                border-bottom: 1px solid #2d2d2d;
+                padding: 10px 8px;
+                border: none;
+            }
+            QTableWidget::item:alternate {
+                background-color: #252525;
             }
             QTableWidget::item:selected {
                 background-color: #4CAF50;
                 color: white;
             }
             QTableWidget::item:hover {
-                background-color: #3d3d3d;
+                background-color: #333333;
             }
             QHeaderView::section {
                 background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
@@ -321,7 +362,7 @@ class HataliIslerPage(QWidget):
         print(f"[OK] Tablo güncellendi: {row_count} satır, {col_count} sütun")
     
     def _apply_filters(self):
-        """Filtreleri uygula"""
+        """Filtreleri uygula (YENİ! v1.1 - Ay/Yıl + Boş Mesaj)"""
         if self.hatali_df is None or self.hatali_df.empty:
             return
         
@@ -339,6 +380,29 @@ class HataliIslerPage(QWidget):
         ekip = self.ekip_filter.currentText()
         if ekip != "Tümü":
             filtered = filtered[filtered['Ekip_Adi'] == ekip]
+        
+        # Ay filtresi (YENİ! v1.1 - DÜZELTİLDİ!)
+        ay = self.ay_filter.currentText()
+        if ay != "Tümü" and 'Son_Hatali_Calisma_Tarihi' in filtered.columns:
+            ay_map = {
+                "Ocak": 1, "Şubat": 2, "Mart": 3, "Nisan": 4,
+                "Mayıs": 5, "Haziran": 6, "Temmuz": 7, "Ağustos": 8,
+                "Eylül": 9, "Ekim": 10, "Kasım": 11, "Aralık": 12
+            }
+            ay_num = ay_map.get(ay)
+            if ay_num:
+                # Tarih sütununu datetime'a çevir
+                tarih_dt = pd.to_datetime(filtered['Son_Hatali_Calisma_Tarihi'], errors='coerce')
+                # NaT olmayan ve ay eşleşen satırları filtrele
+                filtered = filtered[tarih_dt.notna() & (tarih_dt.dt.month == ay_num)]
+        
+        # Yıl filtresi (YENİ! v1.1 - DÜZELTİLDİ!)
+        yil = self.yil_filter.currentText()
+        if yil != "Tümü" and 'Son_Hatali_Calisma_Tarihi' in filtered.columns:
+            # Tarih sütununu datetime'a çevir
+            tarih_dt = pd.to_datetime(filtered['Son_Hatali_Calisma_Tarihi'], errors='coerce')
+            # NaT olmayan ve yıl eşleşen satırları filtrele
+            filtered = filtered[tarih_dt.notna() & (tarih_dt.dt.year == int(yil))]
         
         # Sıralama
         sort_option = self.sort_combo.currentText()
@@ -361,11 +425,15 @@ class HataliIslerPage(QWidget):
         # Tabloyu güncelle
         self._populate_table()
         
-        # İstatistik güncelle
+        # İstatistik güncelle (YENİ! v1.1 - Boş Sonuç Mesajı)
         total_count = len(self.hatali_df)
         filtered_count = len(filtered)
         
-        if filtered_count == total_count:
+        if filtered_count == 0:
+            # BOŞ SONUÇ MESAJI (YENİ! v1.1)
+            self.stats_label.setText("❌ Filtrelere uygun sonuç bulunamadı")
+            self.stats_label.setStyleSheet("color: #FF5722; padding: 10px; font-weight: bold;")
+        elif filtered_count == total_count:
             self.stats_label.setText(f"✅ Toplam {total_count} hatalı iş")
             self.stats_label.setStyleSheet("color: #4CAF50; padding: 10px; font-weight: bold;")
         else:
@@ -375,17 +443,19 @@ class HataliIslerPage(QWidget):
             self.stats_label.setStyleSheet("color: #2196F3; padding: 10px; font-weight: bold;")
     
     def _clear_filters(self):
-        """Tüm filtreleri temizle"""
+        """Tüm filtreleri temizle (YENİ! v1.1 - Ay/Yıl dahil)"""
         # Filtreleri sıfırla
         self.jcl_filter.clear()
         self.ekip_filter.setCurrentIndex(0)  # "Tümü"
+        self.ay_filter.setCurrentIndex(0)    # "Tümü" (YENİ! v1.1)
+        self.yil_filter.setCurrentIndex(0)   # "Tümü" (YENİ! v1.1)
         self.sort_combo.setCurrentIndex(0)   # İlk seçenek
         
         # Filtreleri uygula (otomatik olarak uygulanacak)
         # Ama yine de manuel çağır
         self._apply_filters()
         
-        print("[OK] Filtreler temizlendi")
+        print("[OK] Tüm filtreler temizlendi (JCL, Ekip, Ay, Yıl, Sıralama)")
 
 
 if __name__ == "__main__":
