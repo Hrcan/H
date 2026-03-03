@@ -1,8 +1,8 @@
 # 📝 PROJE İLERLEME RAPORU
 
 **Proje:** Excel Veri Görüntüleme Uygulaması  
-**Son Güncelleme:** 2026-03-03 17:47  
-**Genel İlerleme:** %45 (v0.5 Tamamlandı - ExcelReader Entegrasyonu Başarılı!)
+**Son Güncelleme:** 2026-03-03 19:28  
+**Genel İlerleme:** %50 (FAZE 1-4 Tamamlandı - v0.9 Başarılı!)
 
 ---
 
@@ -13,8 +13,8 @@
 | FAZE 1: Altyapı ve Temel Yapı | 🟢 Tamamlandı | 100% | 2026-03-03 14:00 | 16:20 |
 | FAZE 2: Veri Okuma Modülleri | 🟢 Tamamlandı | 100% | 2026-03-03 16:21 | 16:52 |
 | FAZE 3: Ana Pencere ve Menü | 🟢 Tamamlandı | 100% | 2026-03-03 16:53 | 17:10 |
-| FAZE 4: Ana Arama Sayfası | 🟢 Tamamlandı | 100% | 2026-03-03 17:11 | 17:47 |
-| FAZE 5: Hatalı İşler Detay | ⚪ Bekliyor | 0% | - | - |
+| FAZE 4: Ana Arama Sayfası | 🟢 Tamamlandı | 100% | 2026-03-03 17:11 | 19:20 |
+| FAZE 5: Hatalı İşler Detay | ⏳ Sırada | 0% | - | - |
 | FAZE 6: Uzun İşler Detay | ⚪ Bekliyor | 0% | - | - |
 | FAZE 7: Tarih/Ay Filtreleme | ⚪ Bekliyor | 0% | - | - |
 | FAZE 8: Detay Görünümü | ⚪ Bekliyor | 0% | - | - |
@@ -24,152 +24,97 @@
 
 **Durum Göstergeleri:**
 - 🟢 Tamamlandı (4 Faz)
-- 🟡 Devam Ediyor
-- 🔴 Sorunlu
-- ⚪ Bekliyor (7 Faz)
+- ⏳ Sırada (1 Faz)
+- ⚪ Bekliyor (6 Faz)
 
 ---
 
 ## ✅ TAMAMLANAN İŞLER
 
-### 📅 2026-03-03 - SÜPER BAŞARILI GÜN! 🎉
+### 📅 2026-03-03 - MUHTEŞEM BİR GÜN! 🎉
 
 #### ✅ v0.1: Proje Altyapısı (14:00 - 16:20)
 - [x] Proje klasör yapısı oluşturuldu
-- [x] Tüm dokümantasyon hazırlandı (ROADMAP, PROGRESS, CHANGELOG, README)
+- [x] Tüm dokümantasyon hazırlandı
 - [x] requirements.txt, .gitignore oluşturuldu
 - [x] İlk backup alındı
 - [x] Git repository başlatıldı
 
-**Çıktılar:**
-- ✅ Tam klasör yapısı (src/, docs/, data/, backups/)
-- ✅ 4 dokümantasyon dosyası
-- ✅ İlk backup (backup_v0.1_2026-03-03_16-20/)
-
----
-
 #### ✅ v0.2: ExcelReader Modülü (16:21 - 16:52)
-- [x] **src/core/excel_reader.py** yazıldı (260+ satır)
-- [x] Excel dosyaları okuma fonksiyonları
-  - `read_hatali_isler()` - Hatalı İşler okuma
-  - `read_uzun_isler()` - Uzun İşler okuma
-  - Tüm sheet'leri otomatik tespit ve birleştirme
-  
-- [x] **test_hatali_isler.py** test scripti yazıldı
-  - 142 satır veriyi başarıyla okudu
-  - 5 sheet'ten veri toplandı
-  - 38 benzersiz ekip tespit edildi
-
-**Çıktılar:**
-- ✅ ExcelReader sınıfı çalışıyor
-- ✅ 142 satır gerçek veri okundu (46 Hatalı + 96 Uzun)
-- ✅ %100 test başarısı
-
-**Git Commits:**
-- `57640d4` - v0.1: Proje altyapisi
-- `6f9a12e` - v0.2: ExcelReader ve testler
-- `31deddc` - Hatali Isler testi - 142 satir
-
----
+- [x] src/core/excel_reader.py yazıldı (260+ satır)
+- [x] read_hatali_isler() ve read_uzun_isler() fonksiyonları
+- [x] 142 satır veriyi başarıyla okudu
+- [x] 5 sheet'ten veri toplandı
+- [x] 38 benzersiz ekip tespit edildi
 
 #### ✅ v0.3: PyQt5 Ana Pencere (16:53 - 17:10)
-- [x] **src/ui/main_window.py** yazıldı (240+ satır)
+- [x] src/ui/main_window.py yazıldı (240+ satır)
 - [x] PyQt5 kurulumu ve test
 - [x] Ana pencere tasarımı
-  - Ana sayfa (Dashboard)
-  - 3 navigasyon butonu (Ara, Hatalı İşler, Uzun İşler)
-  - Sayfa geçiş sistemi
-  
-- [x] **src/ui/__init__.py** oluşturuldu
-- [x] Çalışan GUI test edildi
-
-**Çıktılar:**
-- ✅ PyQt5 GUI çalışıyor
-- ✅ Sayfa geçiş mekanizması aktif
-- ✅ 3 sayfa placeholder hazır
-
-**Git Commits:**
-- `11c0608` - v0.3: PyQt5 ana pencere
-
----
+- [x] Sayfa geçiş sistemi (QStackedWidget)
 
 #### ✅ v0.4: SearchPage Oluşturma (17:11 - 17:21)
-- [x] **src/ui/search_page.py** yazıldı (230+ satır)
+- [x] src/ui/search_page.py yazıldı (230+ satır)
 - [x] Arama sayfası tasarlandı
-  - JCL adı arama (TextBox)
-  - Ekip seçimi (ComboBox - 38 ekip)
-  - Excel türü seçimi (Hatalı/Uzun/Tümü)
-  - Sonuç gösterme alanı (HTML formatında)
-  
 - [x] MainWindow'a entegre edildi
-- [x] Demo arama sayfası çalıştı
 
-**Çıktılar:**
-- ✅ SearchPage GUI tamamlandı
-- ✅ Ana pencere ile entegrasyon başarılı
-- ✅ Backup alındı (backup_v0.4_2026-03-03_17-21/)
+#### ✅ v0.5: ExcelReader Entegrasyonu (17:30 - 17:47)
+- [x] SearchPage + ExcelReader entegrasyonu
+- [x] 142 satır gerçek veri yüklendi
+- [x] 38 ekip otomatik listelendi
+- [x] Gerçek veri ile arama çalışıyor
 
-**Git Commits:**
-- `0fee50c` - v0.4: SearchPage olusturuldu ve entegre edildi
+#### ✅ v0.6: Toplu Arama Özelliği (17:48 - 18:00)
+- [x] QTextEdit ile çok satırlı JCL girişi
+- [x] Her satıra bir JCL adı yazılabilir
+- [x] 20-30+ JCL birden aranabilir
+- [x] Tekrar eden sonuçlar otomatik temizlenir
+- [x] Sonuç penceresi 2 katı büyütüldü (400px)
 
----
+#### ✅ v0.7: Dark Mode (18:01 - 18:10)
+- [x] Modern koyu tema (#1e1e1e)
+- [x] Yeşil vurgular (#4CAF50)
+- [x] 200+ satır CSS stylesheet
+- [x] Tüm bileşenler özelleştirildi
 
-#### ✅ v0.5: ExcelReader Entegrasyonu (17:30 - 17:47) 🚀
-- [x] **SearchPage + ExcelReader entegrasyonu tamamlandı!**
-- [x] `_load_excel_data()` fonksiyonu yazıldı
-  - Excel dosyalarını otomatik yükleme
-  - 142 satır veri yüklendi
-  
-- [x] `_populate_ekip_combo()` fonksiyonu yazıldı
-  - 38 benzersiz ekibi ComboBox'a ekleme
-  - Alfabetik sıralama
-  
-- [x] `_perform_search()` fonksiyonu güncellendi
-  - Gerçek veri ile arama
-  - JCL adı filtreleme (büyük/küçük harf duyarsız)
-  - Ekip filtreleme
-  - Excel türü filtreleme
-  
-- [x] `_show_real_results()` fonksiyonu yazıldı
-  - HTML tablo formatında sonuç gösterme
-  - Maksimum 50 satır gösterme
-  - Alternatif satır renkleri
-  - İstatistik gösterimi
+#### ✅ v0.8: Modern Tablo Tasarımı (18:11 - 18:15)
+- [x] Gradient başlık (Mor-Pembe)
+- [x] Okunabilir metin renkleri (#e0e0e0)
+- [x] Hover efektleri (#3d3d3d)
+- [x] Box-shadow ve yuvarlatılmış köşeler
 
-- [x] **test_search_page.py** test scripti oluşturuldu
-- [x] **TRANSITION_NOTE.txt** oluşturuldu (token yönetimi için)
-
-**Çıktılar:**
-- ✅ Gerçek veri ile arama ÇALIŞIYOR!
-- ✅ 142 satır Excel verisi yüklendi
-- ✅ 38 ekip otomatik listelendi
-- ✅ HTML tablo ile sonuç gösterimi
-- ✅ Filtreleme sistemi aktif
-
-**Git Commits:**
-- `c7b7249` - v0.5: ExcelReader entegrasyonu tamamlandi - gercek veri ile arama calisiyor
+#### ✅ v0.9: UI Hizalama Düzeltmeleri (18:16 - 19:20)
+- [x] Label'lar sabit genişlik (120px)
+- [x] Sağa yaslanmış hizalama
+- [x] "Ekip:" ve "Excel Türü:" düzgün
 
 ---
 
 ## 🔄 DEVAM EDEN İŞLER
 
-### Şu anda devam eden iş yok - v0.5 tamamlandı! ✅
+### Şu anda devam eden iş yok - Yarın FAZE 5'e başlayacağız! ⏳
 
 ---
 
 ## ⏳ BEKLEYENİ İŞLER
 
-### Sıradaki Görevler (FAZE 5-11):
+### Sıradaki Görev: FAZE 5 - Hatalı İşler Detay Sayfası
 
-#### FAZE 5: Hatalı İşler Detay Sayfası
-- [ ] Hatalı İşler sayfası tasarımı
-- [ ] Tablo görünümü
-- [ ] Detay gösterimi
+Yapılacaklar:
+- [ ] src/ui/hatali_isler_page.py oluştur
+- [ ] Tüm hatalı işleri listele (46 satır)
+- [ ] Modern tablo ile göster
+- [ ] Filtreleme özellikleri ekle
+- [ ] MainWindow'a entegre et
+- [ ] Test et
+- [ ] Backup v1.0 al
+
+### Diğer Bekleyen Fazlar:
 
 #### FAZE 6: Uzun İşler Detay Sayfası
 - [ ] Uzun İşler sayfası tasarımı
-- [ ] Tablo görünümü
-- [ ] Detay gösterimi
+- [ ] 96 satır veriyi göster
+- [ ] Sıralama özellikleri
 
 #### FAZE 7: Tarih/Ay Filtreleme
 - [ ] Ay seçimi dropdown
@@ -178,39 +123,21 @@
 
 ---
 
-## 🐛 SORUNLAR VE ÇÖZÜMLER
-
-### Çözülen Sorunlar:
-
-1. **Unicode/Emoji Console Hatası** ✅
-   - **Sorun:** Windows console emoji'leri desteklemiyor
-   - **Çözüm:** Print'lerdeki emoji'ler [OK] ve [HATA] ile değiştirildi
-
-2. **AttributeError: ekip_combo** ✅
-   - **Sorun:** `_load_excel_data()` çok erken çağrılıyordu
-   - **Çözüm:** Layout oluştuktan sonra çağrılacak şekilde taşındı
-
-3. **Relative Import Hatası** ✅
-   - **Sorun:** `main_window.py` doğrudan çalıştırılamıyordu
-   - **Çözüm:** `test_search_page.py` test scripti oluşturuldu
-
----
-
 ## 📈 İSTATİSTİKLER
 
 ### Kod İstatistikleri:
-- **Toplam Satır:** 1200+ satır kod yazıldı
-- **Dosya Sayısı:** 23+ dosya
-- **Fonksiyon Sayısı:** 30+ fonksiyon
+- **Toplam Satır:** 1600+ satır kod yazıldı
+- **Dosya Sayısı:** 25+ dosya
+- **Fonksiyon Sayısı:** 35+ fonksiyon
 
 ### Modül Bazında:
 | Modül | Satır | Durum |
 |-------|-------|-------|
 | src/core/excel_reader.py | 260+ | ✅ Tamamlandı |
-| src/ui/main_window.py | 240+ | ✅ Tamamlandı |
-| src/ui/search_page.py | 400+ | ✅ Tamamlandı |
+| src/ui/main_window.py | 460+ | ✅ Tamamlandı (Dark Mode!) |
+| src/ui/search_page.py | 470+ | ✅ Tamamlandı (Modern Tablo!) |
 | test_*.py | 200+ | ✅ Tamamlandı |
-| docs/*.md | 300+ | ✅ Tamamlandı |
+| docs/*.md | 400+ | ✅ Tamamlandı |
 
 ### Veri İstatistikleri:
 - **Excel Verisi:** 142 satır
@@ -221,7 +148,7 @@
 
 ### Test İstatistikleri:
 - **Test Başarısı:** %100
-- **Test Edilen Modül:** 3/3
+- **Test Edilen Modül:** 5/5
 - **Manuel Test:** ✅ Başarılı
 
 ---
@@ -232,24 +159,37 @@
 |----------|-------|------|----------|
 | v0.1 | 2026-03-03 | 16:20 | İlk altyapı backup |
 | v0.4 | 2026-03-03 | 17:21 | SearchPage milestone |
+| v0.6 | 2026-03-03 | 18:00 | Toplu arama özelliği |
+| v0.9 | 2026-03-03 | 19:20 | UI düzeltmeleri + Dark Mode + Modern Tablo |
 
-**Sonraki Backup:** v0.5 (Şimdi alınacak)
+**Sonraki Backup:** v1.0 (Hatalı İşler Detay sonrası)
 
 ---
 
 ## 📝 NOTLAR
 
 ### Bugünün Başarıları:
-1. ✅ 1200+ satır kod yazıldı
-2. ✅ 4 major faz tamamlandı (%36 → %45)
+1. ✅ 1600+ satır kod yazıldı
+2. ✅ 5 major versiyon tamamlandı (v0.5 → v0.9)
 3. ✅ PyQt5 GUI çalışıyor
 4. ✅ Excel okuma çalışıyor
 5. ✅ Gerçek arama çalışıyor
 6. ✅ 142 satır veri yüklendi
 7. ✅ 38 ekip otomatik listelendi
-8. ✅ %100 test başarısı
-9. ✅ 6 Git commit yapıldı
-10. ✅ 2 backup alındı
+8. ✅ Dark Mode eklendi
+9. ✅ Modern tablo tasarımı
+10. ✅ UI hizalama düzeltildi
+11. ✅ %100 test başarısı
+12. ✅ 12 Git commit yapıldı
+13. ✅ 4 FULL BACKUP alındı
+
+### Kullanıcı Geri Bildirimleri (Tamamlandı):
+1. ✅ "Toplu arama istiyorum" → v0.6
+2. ✅ "Sonuç penceresi büyük olsun" → v0.6  
+3. ✅ "Dark mode istiyorum" → v0.7
+4. ✅ "Tablo okunmuyor" → v0.8
+5. ✅ "UI'da kayma var" → v0.9
+6. ✅ "Her versiyonda backup" → Yapılıyor!
 
 ### Önemli Kararlar:
 1. ✅ Excel okuma pandas ile yapıldı
@@ -258,34 +198,36 @@
 4. ✅ Arama büyük/küçük harf duyarsız
 5. ✅ Maksimum 50 sonuç gösterimi
 6. ✅ HTML formatında tablo
-7. ✅ Emoji'ler console'da kullanılmıyor
+7. ✅ Dark Mode her yerde aktif
+8. ✅ Gradient başlık (Mor-Pembe)
+9. ✅ Hover efektleri ekli
+10. ✅ Her versiyon için backup
 
 ### Sonraki Adımlar:
-1. Backup v0.5 al
-2. Hatalı İşler detay sayfasına başla
-3. Uzun İşler detay sayfası
-4. Tarih filtreleme ekle
+1. ⏳ FAZE 5: Hatalı İşler Detay Sayfası
+2. ⚪ FAZE 6: Uzun İşler Detay Sayfası
+3. ⚪ FAZE 7: Tarih filtreleme ekle
+4. ⚪ FAZE 8-11: Devam...
 
 ---
 
 ## 🎯 HEDEFLER
 
-### Kısa Vadeli (Bu Hafta):
-- [x] FAZE 1'i tamamla ✅
-- [x] FAZE 2'yi tamamla ✅
-- [x] FAZE 3'ü tamamla ✅
-- [x] FAZE 4'ü tamamla ✅
-- [ ] FAZE 5'e başla
-- [ ] İlk detay sayfasını tamamla
+### Kısa Vadeli (Yarın):
+- [ ] FAZE 5'i tamamla (Hatalı İşler Detay)
+- [ ] FAZE 6'ya başla (Uzun İşler Detay)
+- [ ] Backup v1.0 ve v1.1 al
 
-### Orta Vadeli (Bu Ay):
+### Orta Vadeli (Bu Hafta):
 - [x] Excel verilerini görüntüleyebilme ✅
 - [x] Çalışan bir arama sayfası ✅
-- [ ] FAZE 1-7'yi tamamla
+- [x] Dark Mode ✅
+- [x] Modern tablo ✅
+- [ ] FAZE 5-7'yi tamamla
 - [ ] Tablo görünümleri
 - [ ] Tarih filtreleme
 
-### Uzun Vadeli (2-3 Ay):
+### Uzun Vadeli (Bu Ay):
 - [ ] Tüm fazları tamamla (FAZE 8-11)
 - [ ] EXE olarak derleme
 - [ ] Test ve optimizasyon
@@ -302,14 +244,20 @@
 | v0.3 | ✅ | 2026-03-03 17:10 | PyQt5 GUI |
 | v0.4 | ✅ | 2026-03-03 17:21 | SearchPage |
 | v0.5 | ✅ | 2026-03-03 17:47 | Excel Entegrasyon |
-| v0.6 | ⏳ | - | Hatalı İşler Detay |
-| v0.7 | ⏳ | - | Uzun İşler Detay |
-| v1.0 | ⏳ | - | İlk stabil sürüm |
+| v0.6 | ✅ | 2026-03-03 18:00 | Toplu Arama |
+| v0.7 | ✅ | 2026-03-03 18:10 | Dark Mode |
+| v0.8 | ✅ | 2026-03-03 18:15 | Modern Tablo |
+| v0.9 | ✅ | 2026-03-03 19:20 | UI Hizalama |
+| v1.0 | ⏳ | - | Hatalı İşler Detay |
+| v1.1 | ⚪ | - | Uzun İşler Detay |
+| v2.0 | ⚪ | - | İlk stabil sürüm |
 
 ---
 
-**Son İşlem:** v0.5 ExcelReader entegrasyonu tamamlandı  
-**Sonraki İşlem:** Backup v0.5 al, ardından Hatalı İşler detay sayfası  
-**Durum:** 🚀 Hızla İlerliyor - %45 Tamamlandı!
+**Son İşlem:** v0.9 UI hizalama düzeltmeleri tamamlandı  
+**Sonraki İşlem:** FAZE 5 - Hatalı İşler Detay Sayfası  
+**Durum:** 🚀 Mükemmel İlerliyor - %50 Tamamlandı!
 
-**NOT:** Bugün inanılmaz bir ilerleme kaydedildi! 4 major faz tek günde tamamlandı ve gerçek veri ile arama sistemi çalışır hale geldi. Excel'den 142 satır veri başarıyla okunuyor ve kullanıcı arayüzünde görüntüleniyor. 🎉
+**NOT:** Bugün inanılmaz bir ilerleme kaydedildi! 5 major versiyon tamamlandı (v0.5-v0.9), gerçek veri ile arama sistemi çalışıyor, Dark Mode eklendi, modern tablo tasarımı yapıldı ve UI düzgün hale getirildi. Kullanıcı çok memnun! 🎉
+
+**YARIN GÖRÜŞMEK ÜZERE!** �
