@@ -18,6 +18,7 @@ import sys
 # UI modüllerini import et
 from .search_page import SearchPage
 from .hatali_isler_page import HataliIslerPage
+from .log_page import LogPage
 
 
 class MainWindow(QMainWindow):
