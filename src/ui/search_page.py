@@ -112,10 +112,11 @@ class SearchPage(QWidget):
         jcl_layout.addWidget(self.jcl_input)
         layout.addLayout(jcl_layout)
         
-        # Ekip seçimi
+        # Ekip seçimi - DÜZELTİLMİŞ HIZALAMA
         ekip_layout = QHBoxLayout()
         ekip_label = QLabel("Ekip:")
-        ekip_label.setMinimumWidth(100)
+        ekip_label.setFixedWidth(120)  # Fixed width ile sabit genişlik
+        ekip_label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)  # Sağa yasla
         self.ekip_combo = QComboBox()
         self.ekip_combo.addItem("Tümü")
         self.ekip_combo.addItem("YGDB011")
@@ -130,10 +131,11 @@ class SearchPage(QWidget):
         ekip_layout.addWidget(self.ekip_combo)
         layout.addLayout(ekip_layout)
         
-        # Excel türü seçimi
+        # Excel türü seçimi - DÜZELTİLMİŞ HIZALAMA
         type_layout = QHBoxLayout()
         type_label = QLabel("Excel Türü:")
-        type_label.setMinimumWidth(100)
+        type_label.setFixedWidth(120)  # Fixed width ile sabit genişlik
+        type_label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)  # Sağa yasla
         self.type_combo = QComboBox()
         self.type_combo.addItem("Tümü")
         self.type_combo.addItem("Hatalı İşler")
