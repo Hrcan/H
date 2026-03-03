@@ -15,6 +15,9 @@ from PyQt5.QtCore import Qt, QSize
 from PyQt5.QtGui import QFont, QIcon
 import sys
 
+# UI modüllerini import et
+from .search_page import SearchPage
+
 
 class MainWindow(QMainWindow):
     """Ana uygulama penceresi"""
@@ -106,12 +109,15 @@ class MainWindow(QMainWindow):
         """Sayfaları oluştur"""
         # Ana Sayfa (Hoş geldiniz ekranı)
         home_page = self._create_home_page()
-        self.stacked_widget.addWidget(home_page)
+        self.stacked_widget.addWidget(home_page)  # Index 0
+        
+        # Arama Sayfası
+        self.search_page = SearchPage()
+        self.stacked_widget.addWidget(self.search_page)  # Index 1
         
         # Diğer sayfalar gelecekte eklenecek
-        # self.stacked_widget.addWidget(search_page)
-        # self.stacked_widget.addWidget(hatali_isler_page)
-        # self.stacked_widget.addWidget(uzun_isler_page)
+        # self.stacked_widget.addWidget(hatali_isler_page)  # Index 2
+        # self.stacked_widget.addWidget(uzun_isler_page)  # Index 3
     
     def _create_home_page(self):
         """Ana sayfa (hoş geldiniz ekranı) oluştur"""
@@ -157,7 +163,7 @@ class MainWindow(QMainWindow):
         start_btn_font = QFont()
         start_btn_font.setPointSize(14)
         start_btn.setFont(start_btn_font)
-        start_btn.clicked.connect(lambda: self._show_message("Arama sayfası henüz hazır değil"))
+        start_btn.clicked.connect(self._go_to_search_page)
         
         # Butonu ortala
         button_layout = QVBoxLayout()
@@ -177,6 +183,11 @@ class MainWindow(QMainWindow):
         
         page.setLayout(layout)
         return page
+    
+    def _go_to_search_page(self):
+        """Arama sayfasına geç"""
+        self.stacked_widget.setCurrentIndex(1)  # SearchPage index'i
+        self.statusBar.showMessage("Arama sayfası açıldı")
     
     def _load_excel(self):
         """Excel dosyası yükleme (gelecekte implement edilecek)"""
