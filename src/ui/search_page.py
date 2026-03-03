@@ -14,6 +14,13 @@ from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel,
                               QGroupBox, QMessageBox)
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
+import pandas as pd
+
+# ExcelReader'ı import et
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from core.excel_reader import ExcelReader
 
 
 class SearchPage(QWidget):
@@ -22,6 +29,11 @@ class SearchPage(QWidget):
     def __init__(self):
         """SearchPage'i başlat"""
         super().__init__()
+        
+        # ExcelReader ve veri hazırlığı
+        self.reader = ExcelReader()
+        self.hatali_df = None
+        self.uzun_df = None
         
         # Layout oluştur
         main_layout = QVBoxLayout()
@@ -62,6 +74,9 @@ class SearchPage(QWidget):
         main_layout.addStretch()
         
         self.setLayout(main_layout)
+        
+        # Layout oluştuktan sonra Excel verilerini yükle
+        self._load_excel_data()
     
     def _create_search_criteria(self):
         """Arama kriterleri bölümünü oluştur"""
@@ -163,9 +178,9 @@ class SearchPage(QWidget):
         return group
     
     def _perform_search(self):
-        """Arama işlemini gerçekleştir"""
+        """Arama işlemini gerçekleştir - GERÇEKi VERI İLE"""
         # Arama kriterlerin al
-        jcl_name = self.jcl_input.text().strip()
+        jcl_name = self.jcl_input.text().strip().upper()  # Büyük harfe çevir
         ekip = self.ekip_combo.currentText()
         excel_type = self.type_combo.currentText()
         
@@ -179,8 +194,74 @@ class SearchPage(QWidget):
             )
             return
         
-        # Geçici sonuç göster (ExcelReader entegrasyonu sonrası gerçek veri gelecek)
-        self._show_temporary_results(jcl_name, ekip, excel_type)
+        # Excel verilerinin yüklendiğinden emin ol
+        if self.hatali_df is None and self.uzun_df is None:
+            QMessageBox.critical(
+                self,
+                "Hata",
+                "Excel verileri yüklenemedi!\n\n"
+                "Lütfen Excel dosyalarının data/excel/ klasöründe olduğundan emin olun."
+            )
+            return
+        
+        try:
+            # Hangi DataFrame'lerde arama yapılacağını belirle
+            search_in_hatali = (excel_type == "Tümü" or excel_type == "Hatalı İşler")
+            search_in_uzun = (excel_type == "Tümü" or excel_type == "Uzun İşler")
+            
+            results_list = []
+            
+            # Hatalı İşler'de ara
+            if search_in_hatali and self.hatali_df is not None:
+                filtered = self.hatali_df.copy()
+                
+                # JCL adı filtresi
+                if jcl_name:
+                    # JCL_Adi kolonunu büyük harfe çevir ve ara
+                    filtered = filtered[
+                        filtered['JCL_Adi'].str.upper().str.contains(jcl_name, na=False)
+                    ]
+                
+                # Ekip filtresi
+                if ekip != "Tümü":
+                    filtered = filtered[filtered['Ekip_Adi'] == ekip]
+                
+                if not filtered.empty:
+                    results_list.append(filtered)
+            
+            # Uzun İşler'de ara
+            if search_in_uzun and self.uzun_df is not None:
+                filtered = self.uzun_df.copy()
+                
+                # JCL adı filtresi
+                if jcl_name:
+                    filtered = filtered[
+                        filtered['JCL_Adi'].str.upper().str.contains(jcl_name, na=False)
+                    ]
+                
+                # Ekip filtresi
+                if ekip != "Tümü":
+                    filtered = filtered[filtered['Ekip_Adi'] == ekip]
+                
+                if not filtered.empty:
+                    results_list.append(filtered)
+            
+            # Sonuçları birleştir
+            if results_list:
+                combined_results = pd.concat(results_list, ignore_index=True)
+                self._show_real_results(combined_results, jcl_name, ekip, excel_type)
+            else:
+                # Boş DataFrame ile göster (sonuç bulunamadı)
+                empty_df = pd.DataFrame()
+                self._show_real_results(empty_df, jcl_name, ekip, excel_type)
+        
+        except Exception as e:
+            QMessageBox.critical(
+                self,
+                "Hata",
+                f"Arama sırasında hata oluştu:\n\n{str(e)}"
+            )
+            print(f"[HATA] Arama hatasi: {e}")
     
     def _show_temporary_results(self, jcl_name, ekip, excel_type):
         """Geçici sonuçları göster (demo amaçlı)"""
@@ -238,6 +319,163 @@ class SearchPage(QWidget):
         
         # İstatistik güncelle
         self.stats_label.setText(f"🔍 Arama tamamlandı: 2 sonuç bulundu (demo)")
+        self.stats_label.setStyleSheet("color: green; padding: 10px; font-weight: bold;")
+    
+    def _load_excel_data(self):
+        """Excel dosyalarını yükle"""
+        try:
+            # Hatalı İşler Excel dosyasını yükle
+            hatali_path = "data/excel/SAO_Ana_Sistemler_Hatalı_Biten_İsler_Raporu_(ARALIK_2024).xlsx"
+            self.hatali_df = self.reader.read_hatali_isler(hatali_path)
+            
+            # Uzun İşler Excel dosyasını yükle
+            uzun_path = "data/excel/SAO_Sistem_Operasyon_Uzun_Süren_İşler(ARALIK_2024).xlsx"
+            self.uzun_df = self.reader.read_uzun_isler(uzun_path)
+            
+            # Ekip listesini ComboBox'a ekle
+            self._populate_ekip_combo()
+            
+            print("[OK] Excel verileri basariyla yuklendi!")
+            print(f"   - Hatali Isler: {len(self.hatali_df)} satir")
+            print(f"   - Uzun Isler: {len(self.uzun_df)} satir")
+            print(f"   - Toplam: {len(self.hatali_df) + len(self.uzun_df)} satir")
+            
+        except FileNotFoundError as e:
+            error_msg = f"Excel dosyasi bulunamadi: {e}"
+            print(f"[HATA] {error_msg}")
+            QMessageBox.critical(self, "Hata", error_msg)
+        except Exception as e:
+            error_msg = f"Excel yukleme hatasi: {e}"
+            print(f"[HATA] {error_msg}")
+            QMessageBox.critical(self, "Hata", error_msg)
+    
+    def _populate_ekip_combo(self):
+        """Gerçek ekip listesini ComboBox'a ekle"""
+        try:
+            # Mevcut ekipleri temizle (sadece "Tümü" kalsın)
+            self.ekip_combo.clear()
+            self.ekip_combo.addItem("Tümü")
+            
+            # Her iki DataFrame'den benzersiz ekipleri al
+            ekip_set = set()
+            
+            if self.hatali_df is not None and not self.hatali_df.empty:
+                ekip_set.update(self.hatali_df['Ekip_Adi'].unique())
+            
+            if self.uzun_df is not None and not self.uzun_df.empty:
+                ekip_set.update(self.uzun_df['Ekip_Adi'].unique())
+            
+            # Ekipleri alfabetik sırala ve ekle
+            ekip_list = sorted(ekip_set)
+            for ekip in ekip_list:
+                self.ekip_combo.addItem(ekip)
+            
+            print(f"[OK] {len(ekip_list)} benzersiz ekip ComboBox'a eklendi")
+            
+        except Exception as e:
+            print(f"[HATA] Ekip listesi yukleme hatasi: {e}")
+    
+    def _show_real_results(self, results_df, jcl_name, ekip, excel_type):
+        """Gerçek arama sonuçlarını göster"""
+        if results_df.empty:
+            # Sonuç bulunamadı
+            result_html = f"""
+                <div style='padding: 15px;'>
+                    <h3>🔎 Arama Kriterleri:</h3>
+                    <ul>
+                        <li><b>JCL Adı:</b> {jcl_name if jcl_name else '(Tümü)'}</li>
+                        <li><b>Ekip:</b> {ekip}</li>
+                        <li><b>Excel Türü:</b> {excel_type}</li>
+                    </ul>
+                    
+                    <hr>
+                    
+                    <div style='background-color: #fff3cd; padding: 15px; border-left: 4px solid orange;'>
+                        <h3>⚠️ Sonuç Bulunamadı</h3>
+                        <p>Belirtilen kriterlere uygun kayıt bulunamadı.</p>
+                        <p><small>Lütfen arama kriterlerini değiştirerek tekrar deneyin.</small></p>
+                    </div>
+                </div>
+            """
+            self.result_text.setHtml(result_html)
+            self.stats_label.setText("❌ Sonuç bulunamadı")
+            self.stats_label.setStyleSheet("color: orange; padding: 10px; font-weight: bold;")
+            return
+        
+        # Sonuçlar bulundu - HTML tablo oluştur
+        row_count = len(results_df)
+        
+        # Tablo HTML'i başlat
+        table_html = """
+            <table border='1' cellpadding='8' cellspacing='0' style='border-collapse: collapse; width: 100%; font-size: 12px;'>
+                <thead>
+                    <tr style='background-color: #4CAF50; color: white; font-weight: bold;'>
+        """
+        
+        # Başlıkları ekle
+        for col in results_df.columns:
+            table_html += f"<th>{col}</th>"
+        
+        table_html += "</tr></thead><tbody>"
+        
+        # Satırları ekle (maksimum 50 satır göster)
+        max_rows = min(50, row_count)
+        for idx, row in results_df.head(max_rows).iterrows():
+            # Alternatif satır renkleri
+            bg_color = "#f9f9f9" if idx % 2 == 0 else "white"
+            table_html += f"<tr style='background-color: {bg_color};'>"
+            
+            for col in results_df.columns:
+                value = row[col]
+                # NaN veya None kontrolü
+                if pd.isna(value):
+                    value = "-"
+                table_html += f"<td>{value}</td>"
+            
+            table_html += "</tr>"
+        
+        table_html += "</tbody></table>"
+        
+        # Eğer 50'den fazla satır varsa bilgi ekle
+        more_info = ""
+        if row_count > max_rows:
+            more_info = f"""
+                <p style='color: #666; font-style: italic; margin-top: 10px;'>
+                    ℹ️ İlk {max_rows} sonuç gösteriliyor. Toplam {row_count} sonuç bulundu.
+                </p>
+            """
+        
+        # Tam HTML
+        result_html = f"""
+            <div style='padding: 15px;'>
+                <h3>🔎 Arama Kriterleri:</h3>
+                <ul>
+                    <li><b>JCL Adı:</b> {jcl_name if jcl_name else '(Tümü)'}</li>
+                    <li><b>Ekip:</b> {ekip}</li>
+                    <li><b>Excel Türü:</b> {excel_type}</li>
+                </ul>
+                
+                <hr>
+                
+                <h3>📊 Bulunan Sonuçlar: {row_count} kayıt</h3>
+                
+                <div style='overflow-x: auto;'>
+                    {table_html}
+                </div>
+                
+                {more_info}
+                
+                <div style='background-color: #e8f5e9; padding: 10px; border-left: 4px solid green; margin-top: 15px;'>
+                    <b>✅ Arama başarılı!</b><br>
+                    <small>{row_count} kayıt bulundu ve listelendi.</small>
+                </div>
+            </div>
+        """
+        
+        self.result_text.setHtml(result_html)
+        
+        # İstatistik güncelle
+        self.stats_label.setText(f"✅ {row_count} sonuç bulundu")
         self.stats_label.setStyleSheet("color: green; padding: 10px; font-weight: bold;")
 
 
