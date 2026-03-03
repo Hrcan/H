@@ -27,9 +27,12 @@ class MainWindow(QMainWindow):
         super().__init__()
         
         # Pencere özellikleri
-        self.setWindowTitle("Excel Veri Görüntüleme Uygulaması v0.3")
+        self.setWindowTitle("Excel Veri Görüntüleme Uygulaması v0.7 - Dark Mode")
         self.setGeometry(100, 100, 1200, 800)  # x, y, genişlik, yükseklik
         self.setMinimumSize(QSize(1000, 600))
+        
+        # DARK MODE UYGULA! 🎨
+        self._apply_dark_theme()
         
         # Sayfa yönetimi için StackedWidget
         self.stacked_widget = QStackedWidget()
@@ -42,6 +45,221 @@ class MainWindow(QMainWindow):
         
         # İlk sayfayı göster
         self.stacked_widget.setCurrentIndex(0)
+    
+    def _apply_dark_theme(self):
+        """Modern Dark Mode Teması Uygula 🎨"""
+        dark_stylesheet = """
+        /* Ana Pencere ve Genel Stil */
+        QMainWindow, QWidget {
+            background-color: #1e1e1e;
+            color: #e0e0e0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        
+        /* Menü Çubuğu */
+        QMenuBar {
+            background-color: #2d2d2d;
+            color: #ffffff;
+            border-bottom: 1px solid #3d3d3d;
+            padding: 4px;
+        }
+        
+        QMenuBar::item {
+            background-color: transparent;
+            padding: 6px 12px;
+            margin: 2px;
+            border-radius: 4px;
+        }
+        
+        QMenuBar::item:selected {
+            background-color: #404040;
+        }
+        
+        QMenuBar::item:pressed {
+            background-color: #4CAF50;
+        }
+        
+        /* Menü Dropdown */
+        QMenu {
+            background-color: #2d2d2d;
+            color: #ffffff;
+            border: 1px solid #3d3d3d;
+            border-radius: 6px;
+            padding: 6px;
+        }
+        
+        QMenu::item {
+            padding: 8px 24px 8px 12px;
+            border-radius: 4px;
+            margin: 2px;
+        }
+        
+        QMenu::item:selected {
+            background-color: #4CAF50;
+            color: #ffffff;
+        }
+        
+        QMenu::separator {
+            height: 1px;
+            background-color: #3d3d3d;
+            margin: 6px 12px;
+        }
+        
+        /* Butonlar */
+        QPushButton {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+        
+        QPushButton:hover {
+            background-color: #66BB6A;
+        }
+        
+        QPushButton:pressed {
+            background-color: #388E3C;
+        }
+        
+        QPushButton:disabled {
+            background-color: #3d3d3d;
+            color: #808080;
+        }
+        
+        /* Label'lar */
+        QLabel {
+            color: #e0e0e0;
+            background-color: transparent;
+        }
+        
+        /* GroupBox */
+        QGroupBox {
+            background-color: #252525;
+            border: 2px solid #3d3d3d;
+            border-radius: 8px;
+            margin-top: 12px;
+            padding-top: 16px;
+            font-weight: bold;
+            color: #ffffff;
+        }
+        
+        QGroupBox::title {
+            subcontrol-origin: margin;
+            subcontrol-position: top left;
+            padding: 4px 12px;
+            background-color: #2d2d2d;
+            border-radius: 4px;
+            color: #4CAF50;
+        }
+        
+        /* TextEdit ve LineEdit */
+        QTextEdit, QLineEdit {
+            background-color: #2d2d2d;
+            color: #ffffff;
+            border: 2px solid #3d3d3d;
+            border-radius: 6px;
+            padding: 8px;
+            selection-background-color: #4CAF50;
+            selection-color: #ffffff;
+        }
+        
+        QTextEdit:focus, QLineEdit:focus {
+            border: 2px solid #4CAF50;
+        }
+        
+        /* ComboBox */
+        QComboBox {
+            background-color: #2d2d2d;
+            color: #ffffff;
+            border: 2px solid #3d3d3d;
+            border-radius: 6px;
+            padding: 6px 12px;
+            min-height: 24px;
+        }
+        
+        QComboBox:hover {
+            border: 2px solid #4CAF50;
+        }
+        
+        QComboBox::drop-down {
+            border: none;
+            width: 30px;
+        }
+        
+        QComboBox::down-arrow {
+            image: none;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 6px solid #e0e0e0;
+            margin-right: 8px;
+        }
+        
+        QComboBox QAbstractItemView {
+            background-color: #2d2d2d;
+            color: #ffffff;
+            selection-background-color: #4CAF50;
+            border: 1px solid #3d3d3d;
+            border-radius: 6px;
+        }
+        
+        /* Scrollbar */
+        QScrollBar:vertical {
+            background-color: #252525;
+            width: 12px;
+            border-radius: 6px;
+        }
+        
+        QScrollBar::handle:vertical {
+            background-color: #4d4d4d;
+            border-radius: 6px;
+            min-height: 30px;
+        }
+        
+        QScrollBar::handle:vertical:hover {
+            background-color: #5d5d5d;
+        }
+        
+        QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+            height: 0px;
+        }
+        
+        QScrollBar:horizontal {
+            background-color: #252525;
+            height: 12px;
+            border-radius: 6px;
+        }
+        
+        QScrollBar::handle:horizontal {
+            background-color: #4d4d4d;
+            border-radius: 6px;
+            min-width: 30px;
+        }
+        
+        QScrollBar::handle:horizontal:hover {
+            background-color: #5d5d5d;
+        }
+        
+        /* Status Bar */
+        QStatusBar {
+            background-color: #2d2d2d;
+            color: #e0e0e0;
+            border-top: 1px solid #3d3d3d;
+        }
+        
+        /* Tooltips */
+        QToolTip {
+            background-color: #2d2d2d;
+            color: #ffffff;
+            border: 1px solid #4CAF50;
+            border-radius: 4px;
+            padding: 6px;
+        }
+        """
+        
+        self.setStyleSheet(dark_stylesheet)
     
     def _create_menu_bar(self):
         """Menü çubuğunu oluştur"""
