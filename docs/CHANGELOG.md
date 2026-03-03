@@ -7,14 +7,78 @@
 
 ## [Unreleased] - Geliştirme Aşamasında
 
-### Planlanıyor (v0.2)
-- Excel okuma modülü (FAZE 2)
-- PyQt5 ana pencere (FAZE 3)
-- Arama ve filtreleme özellikleri (FAZE 4)
+### Planlanıyor (v1.1) - Hatalı İşler İyileştirmeleri
+- Tablo renk düzeltmesi (alternatif satır renkleri)
+- Aylık filtreleme özelliği (Ay/Yıl seçici)
+- Boş sonuç mesajı iyileştirmesi
 
-### Planlanıyor (v0.3+)
+### Planlanıyor (v1.2) - Log Sistemi ⭐ ÖNEMLİ
+- Logger modülü (dosya ve konsol)
+- Log seviyeleri (DEBUG, INFO, WARNING, ERROR)
+- Log görüntüleme ekranı
+- Log filtreleme ve arama
+
+### Planlanıyor (v2.0+)
+- Uzun İşler Detay Sayfası (FAZE 6)
+- Tarih/Ay global filtreleme (FAZE 7)
 - TXT dosyası desteği (FAZE 9)
 - EXE derleme (FAZE 11)
+
+---
+
+## [1.0.0] - 2026-03-03 ✅ TAMAMLANDI - FAZE 5
+
+### Eklenenler ✨
+- **Hatalı İşler Detay Sayfası (YENİ SAYFA!)**
+  - `src/ui/hatali_isler_page.py` - 460+ satır
+  - Tüm hatalı işleri listeleyen detay sayfası
+  - 46 satır hatalı iş verisi otomatik yükleniyor
+  - Modern QTableWidget kullanımı
+  
+- **Filtreleme Özellikleri**
+  - JCL adı filtresi (otomatik)
+  - Ekip filtresi (ComboBox)
+  - Filtre temizleme butonu
+  
+- **Sıralama Özellikleri**
+  - Tarih sıralaması (Yeni → Eski, Eski → Yeni)
+  - JCL adı sıralaması (A → Z, Z → A)
+  - Ekip sıralaması (A → Z)
+  
+- **Modern Dark Theme Tablo**
+  - Gradient mor-pembe başlık (#667eea → #764ba2)
+  - Alternatif satır renkleri (#2d2d2d, #252525)
+  - Hover efektleri (#3d3d3d)
+  - Okunabilir metin (#e0e0e0)
+  
+- **MainWindow Entegrasyonu**
+  - Menüye "Hatalı İşler Detay" eklendi
+  - Klavye kısayolu: Ctrl+1
+  - StackedWidget'a index 2 olarak eklendi
+  
+- **Test Dosyası**
+  - `test_hatali_isler_page.py` oluşturuldu
+  - GUI test başarılı (46 satır yüklendi)
+
+### Değiştirililer 🔄
+- MainWindow'a HataliIslerPage import eklendi
+- Menü yapısı güncellendi (Hatalı İşler aktif)
+- Pencere başlığı v1.0 olarak güncellendi
+
+### Bilinen Sorunlar ⚠️
+- Tablo alternatif renkleri optimize edilecek (v1.1)
+- Aylık filtreleme eksik (v1.1'de eklenecek)
+- Boş sonuç mesajı gösterilmiyor (v1.1'de eklenecek)
+- Log sistemi yok (v1.2'de eklenecek) ⭐
+
+---
+
+## [0.9.0] - 2026-03-03 ✅ TAMAMLANDI
+
+### Eklenenler ✨
+- UI hizalama düzeltmeleri
+- Label'lar sabit genişlik (120px)
+- Sağa yaslanmış hizalama
 
 ---
 

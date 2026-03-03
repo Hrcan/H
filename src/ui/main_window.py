@@ -17,6 +17,7 @@ import sys
 
 # UI modüllerini import et
 from .search_page import SearchPage
+from .hatali_isler_page import HataliIslerPage
 
 
 class MainWindow(QMainWindow):
@@ -294,11 +295,11 @@ class MainWindow(QMainWindow):
         home_action.triggered.connect(lambda: self.stacked_widget.setCurrentIndex(0))
         view_menu.addAction(home_action)
         
-        # Hatalı İşler
-        hatali_action = QAction("Hatalı İşler", self)
+        # Hatalı İşler (YENİ! v1.0 - AKTİF)
+        hatali_action = QAction("Hatalı İşler Detay", self)
         hatali_action.setShortcut("Ctrl+1")
-        hatali_action.setStatusTip("Hatalı işler sayfası")
-        hatali_action.triggered.connect(lambda: self._show_message("Hatalı İşler sayfası henüz hazır değil"))
+        hatali_action.setStatusTip("Hatalı işler detay sayfası")
+        hatali_action.triggered.connect(self._go_to_hatali_isler_page)
         view_menu.addAction(hatali_action)
         
         # Uzun İşler
@@ -333,8 +334,11 @@ class MainWindow(QMainWindow):
         self.search_page = SearchPage()
         self.stacked_widget.addWidget(self.search_page)  # Index 1
         
+        # Hatalı İşler Detay Sayfası (YENİ! v1.0)
+        self.hatali_isler_page = HataliIslerPage()
+        self.stacked_widget.addWidget(self.hatali_isler_page)  # Index 2
+        
         # Diğer sayfalar gelecekte eklenecek
-        # self.stacked_widget.addWidget(hatali_isler_page)  # Index 2
         # self.stacked_widget.addWidget(uzun_isler_page)  # Index 3
     
     def _create_home_page(self):
@@ -406,6 +410,11 @@ class MainWindow(QMainWindow):
         """Arama sayfasına geç"""
         self.stacked_widget.setCurrentIndex(1)  # SearchPage index'i
         self.statusBar.showMessage("Arama sayfası açıldı")
+    
+    def _go_to_hatali_isler_page(self):
+        """Hatalı İşler Detay sayfasına geç (YENİ! v1.0)"""
+        self.stacked_widget.setCurrentIndex(2)  # HataliIslerPage index'i
+        self.statusBar.showMessage("Hatalı İşler Detay sayfası açıldı")
     
     def _load_excel(self):
         """Excel dosyası yükleme (gelecekte implement edilecek)"""
