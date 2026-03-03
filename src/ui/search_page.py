@@ -444,35 +444,55 @@ class SearchPage(QWidget):
             self.stats_label.setStyleSheet("color: orange; padding: 10px; font-weight: bold;")
             return
         
-        # Sonuçlar bulundu - HTML tablo oluştur
+        # Sonuçlar bulundu - MODERN HTML tablo oluştur
         row_count = len(results_df)
         
-        # Tablo HTML'i başlat
+        # Tablo HTML'i başlat - MODERN DARK THEME!
         table_html = """
-            <table border='1' cellpadding='8' cellspacing='0' style='border-collapse: collapse; width: 100%; font-size: 12px;'>
+            <table border='0' cellpadding='12' cellspacing='0' style='
+                border-collapse: collapse; 
+                width: 100%; 
+                font-size: 13px;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+                border-radius: 8px;
+                overflow: hidden;
+            '>
                 <thead>
-                    <tr style='background-color: #4CAF50; color: white; font-weight: bold;'>
+                    <tr style='
+                        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                        color: #ffffff;
+                        font-weight: bold;
+                        text-transform: uppercase;
+                        letter-spacing: 0.5px;
+                        font-size: 12px;
+                    '>
         """
         
-        # Başlıkları ekle
+        # Başlıkları ekle - OKUNUR BEYAZ METIN
         for col in results_df.columns:
-            table_html += f"<th>{col}</th>"
+            table_html += f"<th style='padding: 15px; text-align: left; border-bottom: 3px solid #5a67d8;'>{col}</th>"
         
         table_html += "</tr></thead><tbody>"
         
-        # Satırları ekle (maksimum 50 satır göster)
+        # Satırları ekle (maksimum 50 satır göster) - OKUNUR RENKLER
         max_rows = min(50, row_count)
         for idx, row in results_df.head(max_rows).iterrows():
-            # Alternatif satır renkleri
-            bg_color = "#f9f9f9" if idx % 2 == 0 else "white"
-            table_html += f"<tr style='background-color: {bg_color};'>"
+            # Alternatif satır renkleri - KOYU TEMA İÇİN
+            bg_color = "#2d2d2d" if idx % 2 == 0 else "#252525"
+            hover_effect = "onmouseover=\"this.style.backgroundColor='#3d3d3d'\" onmouseout=\"this.style.backgroundColor='" + bg_color + "'\""
+            
+            table_html += f"<tr style='background-color: {bg_color}; transition: all 0.2s;' {hover_effect}>"
             
             for col in results_df.columns:
                 value = row[col]
                 # NaN veya None kontrolü
                 if pd.isna(value):
                     value = "-"
-                table_html += f"<td>{value}</td>"
+                    text_color = "#888888"
+                else:
+                    text_color = "#e0e0e0"  # AÇIK GRİ - OKUNABİLİR!
+                
+                table_html += f"<td style='padding: 12px; color: {text_color}; border-bottom: 1px solid #3d3d3d;'>{value}</td>"
             
             table_html += "</tr>"
         
