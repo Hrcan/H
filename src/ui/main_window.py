@@ -310,6 +310,15 @@ class MainWindow(QMainWindow):
         uzun_action.triggered.connect(lambda: self._show_message("Uzun İşler sayfası henüz hazır değil"))
         view_menu.addAction(uzun_action)
         
+        view_menu.addSeparator()
+        
+        # Log Görüntüleme (YENİ! v1.2)
+        log_action = QAction("Log Görüntüleme", self)
+        log_action.setShortcut("Ctrl+L")
+        log_action.setStatusTip("Uygulama loglarını görüntüle")
+        log_action.triggered.connect(self._go_to_log_page)
+        view_menu.addAction(log_action)
+        
         # Yardım Menüsü
         help_menu = menubar.addMenu("&Yardım")
         
@@ -339,8 +348,12 @@ class MainWindow(QMainWindow):
         self.hatali_isler_page = HataliIslerPage()
         self.stacked_widget.addWidget(self.hatali_isler_page)  # Index 2
         
+        # Log Görüntüleme Sayfası (YENİ! v1.2)
+        self.log_page = LogPage()
+        self.stacked_widget.addWidget(self.log_page)  # Index 3
+        
         # Diğer sayfalar gelecekte eklenecek
-        # self.stacked_widget.addWidget(uzun_isler_page)  # Index 3
+        # self.stacked_widget.addWidget(uzun_isler_page)  # Index 4
     
     def _create_home_page(self):
         """Ana sayfa (hoş geldiniz ekranı) oluştur"""
@@ -416,6 +429,11 @@ class MainWindow(QMainWindow):
         """Hatalı İşler Detay sayfasına geç (YENİ! v1.0)"""
         self.stacked_widget.setCurrentIndex(2)  # HataliIslerPage index'i
         self.statusBar.showMessage("Hatalı İşler Detay sayfası açıldı")
+    
+    def _go_to_log_page(self):
+        """Log sayfasına geç (YENİ! v1.2)"""
+        self.stacked_widget.setCurrentIndex(3)  # LogPage index'i
+        self.statusBar.showMessage("Log sayfası açıldı")
     
     def _load_excel(self):
         """Excel dosyası yükleme (gelecekte implement edilecek)"""
