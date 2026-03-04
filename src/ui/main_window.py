@@ -23,6 +23,7 @@ from .hatali_isler_page import HataliIslerPage
 from .uzun_isler_page import UzunIslerPage
 from .log_page import LogPage
 from .data_manager_page import DataManagerPage
+from .database_viewer_page import DatabaseViewerPage
 from .components.feature_card import FeatureCard
 from .themes.theme_manager import ThemeManager
 
@@ -38,7 +39,7 @@ class MainWindow(QMainWindow):
         self.theme_manager = ThemeManager()
         
         # Pencere özellikleri
-        self.setWindowTitle("Excel Veri Görüntüleme Uygulaması v2.5.0 - Modern Design")
+        self.setWindowTitle("Excel Veri Görüntüleme Uygulaması v2.5.2 - Database Viewer")
         self.setGeometry(100, 100, 1280, 850)  # x, y, genişlik, yükseklik
         self.setMinimumSize(QSize(1100, 700))
         
@@ -334,6 +335,13 @@ class MainWindow(QMainWindow):
         data_manager_action.triggered.connect(self._go_to_data_manager_page)
         view_menu.addAction(data_manager_action)
         
+        # Database Viewer (YENİ! v2.5.2) 🗄️
+        db_viewer_action = QAction("Database Viewer", self)
+        db_viewer_action.setShortcut("Ctrl+B")
+        db_viewer_action.setStatusTip("Bellek içeriğini görüntüle")
+        db_viewer_action.triggered.connect(self._go_to_database_viewer_page)
+        view_menu.addAction(db_viewer_action)
+        
         # Log Görüntüleme (YENİ! v1.2)
         log_action = QAction("Log Görüntüleme", self)
         log_action.setShortcut("Ctrl+L")
@@ -381,6 +389,10 @@ class MainWindow(QMainWindow):
         # Veri Yönetimi Sayfası (YENİ! v2.4) 🆕
         self.data_manager_page = DataManagerPage()
         self.stacked_widget.addWidget(self.data_manager_page)  # Index 5
+        
+        # Database Viewer Sayfası (YENİ! v2.5.2) 🗄️
+        self.database_viewer_page = DatabaseViewerPage()
+        self.stacked_widget.addWidget(self.database_viewer_page)  # Index 6
     
     def _create_home_page(self):
         """Ana sayfa - Modern Dashboard Tasarımı"""
@@ -410,7 +422,7 @@ class MainWindow(QMainWindow):
         main_layout.addLayout(header_layout)
         main_layout.addSpacing(10)
         
-        # Ana İşlevler - 2x3 Grid
+        # Ana İşlevler - 3x3 Grid (Database Viewer eklendi!)
         features_grid = QGridLayout()
         features_grid.setSpacing(15)
         
@@ -445,6 +457,12 @@ class MainWindow(QMainWindow):
             "💾", "VERİ YÖNETİMİ", "Veri Temizleme\nYeniden Yükleme",
             self._go_to_data_manager_page, "#3498DB"
         ), 1, 2)
+        
+        # Satır 3 (YENİ! Database Viewer)
+        features_grid.addWidget(self._create_feature_button(
+            "🗄️", "DATABASE VIEWER", "Bellek İçeriği\nGerçek Zamanlı",
+            self._go_to_database_viewer_page, "#8E44AD"
+        ), 2, 0)
         
         main_layout.addLayout(features_grid)
         
@@ -607,6 +625,13 @@ class MainWindow(QMainWindow):
         # Sayfa her açıldığında yenile
         self.data_manager_page._load_data_info()
     
+    def _go_to_database_viewer_page(self):
+        """Database Viewer sayfasına geç (YENİ! v2.5.2) 🗄️"""
+        self.stacked_widget.setCurrentIndex(6)  # DatabaseViewerPage index'i
+        self.statusBar.showMessage("Database Viewer sayfası açıldı")
+        # Sayfa her açıldığında yenile
+        self.database_viewer_page._refresh_data()
+    
     def _load_excel(self):
         """Excel dosyası yükleme (toplu yükleme destekli)"""
         # ÇOKLU dosya seçici aç
@@ -731,8 +756,8 @@ class MainWindow(QMainWindow):
         """Hakkında dialogunu göster"""
         about_text = """
         <h2>Excel Veri Görüntüleme Uygulaması</h2>
-        <p><b>Versiyon:</b> 0.3.0</p>
-        <p><b>Tarih:</b> 2026-03-03</p>
+        <p><b>Versiyon:</b> 2.5.2</p>
+        <p><b>Tarih:</b> 2026-03-04</p>
         
         <h3>Özellikler:</h3>
         <ul>
@@ -740,8 +765,8 @@ class MainWindow(QMainWindow):
             <li>✅ Multi-sheet desteği</li>
             <li>✅ Hatalı İşler analizi</li>
             <li>✅ Uzun İşler takibi</li>
-            <li>⏳ Gelişmiş arama (geliştirme aşamasında)</li>
-            <li>⏳ Filtreleme (geliştirme aşamasında)</li>
+            <li>✅ Database Viewer (Bellek görüntüleme)</li>
+            <li>✅ Modern UI ve Tema sistemi</li>
         </ul>
         
         <h3>Teknolojiler:</h3>
@@ -752,7 +777,7 @@ class MainWindow(QMainWindow):
             <li>openpyxl 3.1.5</li>
         </ul>
         
-        <p><b>Durum:</b> FAZE 3 - Ana Pencere Tamamlandı</p>
+        <p><b>Durum:</b> v2.5.2 - Database Viewer Eklendi</p>
         <p><b>Test Edilen Veri:</b> 142 satır (5 sheet)</p>
         """
         
@@ -793,6 +818,14 @@ class MainWindow(QMainWindow):
             self.stacked_widget.insertWidget(5, self.data_manager_page)
             if old_data:
                 old_data.deleteLater()
+            
+            # Database Viewer page - yenile
+            old_db = self.stacked_widget.widget(6)
+            self.database_viewer_page = DatabaseViewerPage()
+            self.stacked_widget.removeWidget(old_db)
+            self.stacked_widget.insertWidget(6, self.database_viewer_page)
+            if old_db:
+                old_db.deleteLater()
             
             # Ana sayfaya dön
             self.stacked_widget.setCurrentIndex(0)
