@@ -448,53 +448,86 @@ class MainWindow(QMainWindow):
         self.statusBar.showMessage("Uzun İşler Detay sayfası açıldı")
     
     def _load_excel(self):
-        """Excel dosyası yükleme"""
-        # Dosya seçici aç
-        file_path, _ = QFileDialog.getOpenFileName(
+        """Excel dosyası yükleme (toplu yükleme destekli)"""
+        # ÇOKLU dosya seçici aç
+        file_paths, _ = QFileDialog.getOpenFileNames(
             self,
-            "Excel Dosyası Seç",
+            "Excel Dosyaları Seç (Birden fazla seçilebilir)",
             "data/excel",  # Varsayılan dizin
             "Excel Dosyaları (*.xlsx *.xls);;Tüm Dosyalar (*.*)"
         )
         
-        if file_path:
-            # Dosya seçildi
-            file_name = os.path.basename(file_path)
+        if file_paths:
+            # Dosyalar kategorize et
+            hatali_files = []
+            uzun_files = []
+            unknown_files = []
             
-            # Dosya türünü belirle
-            if "Hatalı" in file_name or "HATALI" in file_name.upper():
-                # Hatalı İşler Excel'i
+            for file_path in file_paths:
+                file_name = os.path.basename(file_path)
+                
+                if "Hatalı" in file_name or "HATALI" in file_name.upper():
+                    hatali_files.append(file_name)
+                elif "Uzun" in file_name or "UZUN" in file_name.upper():
+                    uzun_files.append(file_name)
+                else:
+                    unknown_files.append(file_name)
+            
+            # Yükleme sonuçları
+            loaded = []
+            errors = []
+            
+            # Hatalı İşler dosyalarını yükle
+            if hatali_files:
                 try:
-                    # Hatalı İşler sayfasını yeniden yükle
                     self.hatali_isler_page = HataliIslerPage()
                     self.stacked_widget.removeWidget(self.stacked_widget.widget(2))
                     self.stacked_widget.insertWidget(2, self.hatali_isler_page)
-                    
-                    self._show_message(f"✅ Hatalı İşler Excel yüklendi:\n{file_name}")
-                    self.statusBar.showMessage(f"Hatalı İşler Excel yüklendi: {file_name}", 5000)
+                    loaded.append(f"✅ Hatalı İşler: {len(hatali_files)} dosya")
                 except Exception as e:
-                    QMessageBox.critical(self, "Hata", f"Excel yükleme hatası:\n{str(e)}")
-                    
-            elif "Uzun" in file_name or "UZUN" in file_name.upper():
-                # Uzun İşler Excel'i
+                    errors.append(f"❌ Hatalı İşler: {str(e)}")
+            
+            # Uzun İşler dosyalarını yükle
+            if uzun_files:
                 try:
-                    # Uzun İşler sayfasını yeniden yükle
                     self.uzun_isler_page = UzunIslerPage()
                     self.stacked_widget.removeWidget(self.stacked_widget.widget(4))
                     self.stacked_widget.insertWidget(4, self.uzun_isler_page)
-                    
-                    self._show_message(f"✅ Uzun İşler Excel yüklendi:\n{file_name}")
-                    self.statusBar.showMessage(f"Uzun İşler Excel yüklendi: {file_name}", 5000)
+                    loaded.append(f"✅ Uzun İşler: {len(uzun_files)} dosya")
                 except Exception as e:
-                    QMessageBox.critical(self, "Hata", f"Excel yükleme hatası:\n{str(e)}")
+                    errors.append(f"❌ Uzun İşler: {str(e)}")
+            
+            # Sonuç mesajı
+            message_parts = []
+            
+            if loaded:
+                message_parts.append("📦 Yüklenen Excel Dosyaları:\n")
+                message_parts.append("\n".join(loaded))
+            
+            if unknown_files:
+                message_parts.append(f"\n\n⚠️ Tanınmayan dosyalar ({len(unknown_files)}):")
+                for f in unknown_files[:3]:  # İlk 3'ünü göster
+                    message_parts.append(f"  • {f}")
+                if len(unknown_files) > 3:
+                    message_parts.append(f"  ... ve {len(unknown_files)-3} dosya daha")
+            
+            if errors:
+                message_parts.append("\n\n❌ Hatalar:")
+                message_parts.append("\n".join(errors))
+            
+            # Mesajı göster
+            final_message = "\n".join(message_parts)
+            if errors:
+                QMessageBox.warning(self, "Yükleme Tamamlandı (Hatalarla)", final_message)
             else:
-                # Dosya türü belirlenemedi
-                QMessageBox.warning(
-                    self,
-                    "Uyarı", 
-                    f"Dosya türü belirlenemedi: {file_name}\n\n"
-                    "Lütfen dosya adında 'Hatalı' veya 'Uzun' kelimesi olduğundan emin olun."
-                )
+                QMessageBox.information(self, "Yükleme Başarılı", final_message)
+            
+            # Status bar güncelle
+            summary = f"{len(hatali_files)} Hatalı + {len(uzun_files)} Uzun İşler Excel yüklendi"
+            if unknown_files:
+                summary += f" ({len(unknown_files)} tanınmayan)"
+            self.statusBar.showMessage(summary, 5000)
+            
         else:
             # Dosya seçilmedi
             self.statusBar.showMessage("Excel yükleme iptal edildi", 3000)
