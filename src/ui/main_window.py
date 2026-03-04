@@ -391,7 +391,7 @@ class MainWindow(QMainWindow):
         self.stacked_widget.addWidget(self.data_manager_page)  # Index 5
         
         # Database Viewer Sayfası (YENİ! v2.5.2) 🗄️
-        self.database_viewer_page = DatabaseViewerPage()
+        self.database_viewer_page = DatabaseViewerPage(main_window=self)
         self.stacked_widget.addWidget(self.database_viewer_page)  # Index 6
     
     def _create_home_page(self):
@@ -821,7 +821,7 @@ class MainWindow(QMainWindow):
             
             # Database Viewer page - yenile
             old_db = self.stacked_widget.widget(6)
-            self.database_viewer_page = DatabaseViewerPage()
+            self.database_viewer_page = DatabaseViewerPage(main_window=self)
             self.stacked_widget.removeWidget(old_db)
             self.stacked_widget.insertWidget(6, self.database_viewer_page)
             if old_db:

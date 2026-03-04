@@ -13,31 +13,29 @@ Bellekte yüklü tüm DataFrame'leri ve içeriklerini gösterir
 from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel,
                               QTextEdit, QComboBox, QPushButton, QGroupBox,
                               QTableWidget, QTableWidgetItem, QHeaderView,
-                              QAbstractItemView, QScrollArea)
+                              QAbstractItemView, QScrollArea, QMessageBox)
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont, QColor
 import sys
 import os
 import pandas as pd
 
-# ExcelReader'ı import et
+# Logger'ı başlat
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from core.excel_reader import ExcelReader
 from core.logger import get_logger
 
-# Logger'ı başlat
 logger = get_logger()
 
 
 class DatabaseViewerPage(QWidget):
     """Database/Bellek İçeriği Görüntüleyici"""
     
-    def __init__(self):
+    def __init__(self, main_window=None):
         """DatabaseViewerPage'i başlat"""
         super().__init__()
         
-        # ExcelReader instance (singleton pattern)
-        self.reader = ExcelReader()
+        # Ana pencereye referans (DataFrame'lere erişmek için)
+        self.main_window = main_window
         
         # Layout oluştur
         main_layout = QVBoxLayout()
@@ -221,19 +219,42 @@ class DatabaseViewerPage(QWidget):
         group.setLayout(layout)
         return group
     
+    def _get_dataframes(self):
+        """Main window'dan DataFrame'leri al"""
+        dataframes = {}
+        
+        if self.main_window is None:
+            return dataframes
+        
+        try:
+            # Hatalı İşler sayfasından DataFrame al
+            if hasattr(self.main_window, 'hatali_isler_page'):
+                page = self.main_window.hatali_isler_page
+                if hasattr(page, 'df') and page.df is not None and not page.df.empty:
+                    dataframes['Hatalı İşler'] = page.df
+            
+            # Uzun İşler sayfasından DataFrame al
+            if hasattr(self.main_window, 'uzun_isler_page'):
+                page = self.main_window.uzun_isler_page
+                if hasattr(page, 'df') and page.df is not None and not page.df.empty:
+                    dataframes['Uzun İşler'] = page.df
+            
+            # Search sayfasından DataFrame al
+            if hasattr(self.main_window, 'search_page'):
+                page = self.main_window.search_page
+                if hasattr(page, 'combined_df') and page.combined_df is not None and not page.combined_df.empty:
+                    dataframes['Arama (Combined)'] = page.combined_df
+                    
+        except Exception as e:
+            logger.error(f"DataFrame alma hatası: {e}", exc_info=True)
+        
+        return dataframes
+    
     def _refresh_data(self):
         """Bellek içeriğini yenile"""
         try:
-            # ExcelReader'dan tüm DataFrame'leri al
-            dataframes = {}
-            
-            # Hatalı İşler DataFrame'i kontrol et
-            if hasattr(self.reader, '_hatali_df_cache') and self.reader._hatali_df_cache is not None:
-                dataframes['Hatalı İşler (Bellekte)'] = self.reader._hatali_df_cache
-            
-            # Uzun İşler DataFrame'i kontrol et
-            if hasattr(self.reader, '_uzun_df_cache') and self.reader._uzun_df_cache is not None:
-                dataframes['Uzun İşler (Bellekte)'] = self.reader._uzun_df_cache
+            # Main window'dan DataFrame'leri al
+            dataframes = self._get_dataframes()
             
             # Özet bilgiyi güncelle
             self._update_summary(dataframes)
@@ -261,6 +282,7 @@ class DatabaseViewerPage(QWidget):
 Veri yüklemek için:
   • Ana sayfadan "Excel Yükle" butonuna tıklayın
   • Veya Ctrl+O kısayolunu kullanın
+  • Veya Ctrl+1 / Ctrl+2 ile sayfalara gidin
 """
             self.summary_text.setPlainText(summary)
             return
@@ -320,11 +342,8 @@ Veri yüklemek için:
         
         try:
             # DataFrame'i bul
-            df = None
-            if df_name == 'Hatalı İşler (Bellekte)':
-                df = self.reader._hatali_df_cache
-            elif df_name == 'Uzun İşler (Bellekte)':
-                df = self.reader._uzun_df_cache
+            dataframes = self._get_dataframes()
+            df = dataframes.get(df_name)
             
             if df is None or df.empty:
                 self.df_info_label.setText("❌ DataFrame boş veya bulunamadı")
@@ -371,41 +390,48 @@ Veri yüklemek için:
     
     def _clear_memory(self):
         """Bellekteki tüm DataFrame'leri temizle"""
-        from PyQt5.QtWidgets import QMessageBox
-        
         reply = QMessageBox.question(
             self,
             "Bellek Temizleme",
             "Bellekteki TÜM DataFrame'leri silmek istediğinizden emin misiniz?\n\n"
-            "⚠️ Bu işlem geri alınamaz!",
+            "⚠️ Bu işlem geri alınamaz!\n"
+            "⚠️ Tüm sayfalar yeniden oluşturulacak!",
             QMessageBox.Yes | QMessageBox.No,
             QMessageBox.No
         )
         
         if reply == QMessageBox.Yes:
             try:
-                # ExcelReader cache'lerini temizle
-                if hasattr(self.reader, '_hatali_df_cache'):
-                    self.reader._hatali_df_cache = None
-                
-                if hasattr(self.reader, '_uzun_df_cache'):
-                    self.reader._uzun_df_cache = None
-                
-                # Garbage collection tetikle
-                import gc
-                gc.collect()
-                
-                logger.info("Bellek başarıyla temizlendi (Database Viewer)")
-                
-                QMessageBox.information(
-                    self,
-                    "Başarılı",
-                    "✅ Bellek başarıyla temizlendi!\n\n"
-                    "Tüm DataFrame'ler bellekten silindi."
-                )
-                
-                # Görünümü yenile
-                self._refresh_data()
+                # Main window üzerinden temizleme yap
+                if self.main_window and hasattr(self.main_window, 'clear_all_data'):
+                    success = self.main_window.clear_all_data()
+                    
+                    if success:
+                        logger.info("Bellek başarıyla temizlendi (Database Viewer)")
+                        
+                        QMessageBox.information(
+                            self,
+                            "Başarılı",
+                            "✅ Bellek başarıyla temizlendi!\n\n"
+                            "Tüm DataFrame'ler bellekten silindi ve sayfalar yenilendi."
+                        )
+                        
+                        # Görünümü yenile
+                        self._refresh_data()
+                    else:
+                        QMessageBox.warning(
+                            self,
+                            "Uyarı",
+                            "Bellek temizleme tamamlanamadı.\n"
+                            "Detaylar için log dosyasını kontrol edin."
+                        )
+                else:
+                    QMessageBox.critical(
+                        self,
+                        "Hata",
+                        "Ana pencereye erişilemiyor!\n"
+                        "Bellek temizleme yapılamadı."
+                    )
                 
             except Exception as e:
                 logger.error(f"Bellek temizleme hatası: {e}", exc_info=True)
