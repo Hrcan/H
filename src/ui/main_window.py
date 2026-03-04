@@ -18,6 +18,7 @@ import sys
 # UI modüllerini import et
 from .search_page import SearchPage
 from .hatali_isler_page import HataliIslerPage
+from .uzun_isler_page import UzunIslerPage
 from .log_page import LogPage
 
 
@@ -303,11 +304,11 @@ class MainWindow(QMainWindow):
         hatali_action.triggered.connect(self._go_to_hatali_isler_page)
         view_menu.addAction(hatali_action)
         
-        # Uzun İşler
-        uzun_action = QAction("Uzun İşler", self)
+        # Uzun İşler (YENİ! v2.0 - AKTİF!)
+        uzun_action = QAction("Uzun İşler Detay", self)
         uzun_action.setShortcut("Ctrl+2")
-        uzun_action.setStatusTip("Uzun işler sayfası")
-        uzun_action.triggered.connect(lambda: self._show_message("Uzun İşler sayfası henüz hazır değil"))
+        uzun_action.setStatusTip("Uzun işler detay sayfası")
+        uzun_action.triggered.connect(self._go_to_uzun_isler_page)
         view_menu.addAction(uzun_action)
         
         view_menu.addSeparator()
@@ -352,8 +353,9 @@ class MainWindow(QMainWindow):
         self.log_page = LogPage()
         self.stacked_widget.addWidget(self.log_page)  # Index 3
         
-        # Diğer sayfalar gelecekte eklenecek
-        # self.stacked_widget.addWidget(uzun_isler_page)  # Index 4
+        # Uzun İşler Detay Sayfası (YENİ! v2.0)
+        self.uzun_isler_page = UzunIslerPage()
+        self.stacked_widget.addWidget(self.uzun_isler_page)  # Index 4
     
     def _create_home_page(self):
         """Ana sayfa (hoş geldiniz ekranı) oluştur"""
@@ -434,6 +436,11 @@ class MainWindow(QMainWindow):
         """Log sayfasına geç (YENİ! v1.2)"""
         self.stacked_widget.setCurrentIndex(3)  # LogPage index'i
         self.statusBar.showMessage("Log sayfası açıldı")
+    
+    def _go_to_uzun_isler_page(self):
+        """Uzun İşler Detay sayfasına geç (YENİ! v2.0)"""
+        self.stacked_widget.setCurrentIndex(4)  # UzunIslerPage index'i
+        self.statusBar.showMessage("Uzun İşler Detay sayfası açıldı")
     
     def _load_excel(self):
         """Excel dosyası yükleme (gelecekte implement edilecek)"""
