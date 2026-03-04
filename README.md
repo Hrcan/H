@@ -219,6 +219,8 @@ Detaylı dokümantasyon için `docs/` klasörüne bakın:
 - **[ROADMAP.md](docs/ROADMAP.md)** - Proje yol haritası ve geliştirme fazları
 - **[PROGRESS.md](docs/PROGRESS.md)** - Güncel ilerleme durumu ve tamamlanan işler
 - **[CHANGELOG.md](docs/CHANGELOG.md)** - Sürüm geçmişi ve değişiklikler
+- **[BUG_LIST.md](docs/BUG_LIST.md)** - Bilinen sorunlar ve çözüm önerileri
+- **[ÖNERILER.md](docs/ÖNERILER.md)** - 🆕 Geliştirme önerileri ve Cline ile çalışma rehberi
 
 ---
 

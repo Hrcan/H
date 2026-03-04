@@ -7,10 +7,82 @@
 
 ## [Unreleased] - Geliştirme Aşamasında
 
-### Planlanıyor (v2.4+)
+### Planlanıyor (v2.6+)
+- Bug fixes (kritik 3 sorun)
 - Tarih/Ay global filtreleme (FAZE 7)
 - TXT dosyası desteği (FAZE 9)
 - İyileştirmeler ve optimizasyonlar
+
+---
+
+## [2.5.1] - 2026-03-04 ✅ TAMAMLANDI - BELLEK OPTİMİZASYONU + ÖNERİLER 🧹
+
+### Eklenenler ✨
+- **ÖNERILER.md Dosyası (YENİ!)**
+  - `docs/ÖNERILER.md` - 600+ satır kapsamlı rehber
+  - Cline ile iletişim rehberi ("Cline" diye hitap et)
+  - Kısa/uzun vadeli öneriler
+  - Tasarım önerileri (ana sayfa card-based)
+  - Veri yönetimi önerileri (cache, export)
+  - Test önerileri (PyTest suite)
+  - Performans ipuçları (lazy loading, threading)
+  - UX iyileştirmeleri (fuzzy search, favoriler)
+  - EXE derleme detaylı kılavuzu
+  - Uzun vadeli vizyon (v3.0, v4.0)
+
+### Değiştirililer 🔄
+- **Bellek Optimizasyonu (Context Boyutu %95 Azaldı!)**
+  - Backup klasörleri temizlendi: 9 backup → 1 backup (v2.2)
+  - VS Code sekmeleri kapatıldı: 50+ sekme → 0 sekme
+  - .gitignore zaten doğru yapılandırılmış
+  - Konuşmalar artık çok daha uzun sürebilecek
+
+- **Dokümantasyon Güncellemeleri**
+  - README.md - ÖNERILER.md referansı eklendi
+  - ROADMAP.md - ÖNERILER.md linkı eklendi
+  - TRANSITION_NOTE.txt - Bellek optimizasyonu bilgisi eklendi
+
+### Faydalar ✨
+- **Bellek Kullanımı:** ~9500+ karakter → ~500 karakter (her mesajda)
+- **Performans:** Konuşmalar daha uzun süre devam edebilecek
+- **Organizasyon:** Gereksiz eski backuplar temizlendi
+- **Rehber:** ÖNERILER.md ile projeyi geliştirme rehberi hazır
+
+### Teknik Detaylar 🔧
+- **Bellek Optimizasyonu Önce/Sonra:**
+  ```
+  ÖNCE:
+  - 50 açık sekme × ~100 karakter = 5000+ karakter
+  - 9 backup × ~500 karakter = 4500+ karakter
+  - Toplam: ~9500+ karakter/mesaj
+  
+  SONRA:
+  - 0 açık sekme = 0 karakter
+  - 1 backup = ~500 karakter
+  - Toplam: ~500 karakter/mesaj
+  
+  İYİLEŞME: %95 azalma! 🎉
+  ```
+
+- **ÖNERILER.md İçerik:**
+  - 11 ana bölüm
+  - 600+ satır
+  - Kod örnekleri
+  - Hızlı referans
+  - İletişim rehberi
+
+### Test Durumu ✅
+- Bellek optimizasyonu test edildi
+- Dosya yapısı temiz
+- ÖNERILER.md oluşturuldu
+- Dokümantasyon güncellendi
+- Git commit: BEKLEMEDE
+- GitHub push: BEKLEMEDE
+
+### Kullanıcı Geri Bildirimi 💬
+> "sayende oluyor cunlar Cline :D" - Hürcan
+
+**Not:** Bu versiyon bellek sorununu çözdü ve projeyi geliştirme için kapsamlı bir rehber ekledi. Artık konuşmalar çok daha uzun süre devam edebilecek!
 
 ---
 

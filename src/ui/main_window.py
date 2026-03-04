@@ -8,10 +8,10 @@ PyQt5 ile oluşturulmuş ana uygulama penceresi
 - Merkezi widget (sayfa geçişleri için)
 """
 
-from PyQt5.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, 
+from PyQt5.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QGridLayout,
                               QMenuBar, QMenu, QAction, QStatusBar,
                               QLabel, QPushButton, QMessageBox, QStackedWidget,
-                              QFileDialog)
+                              QFileDialog, QFrame)
 from PyQt5.QtCore import Qt, QSize
 from PyQt5.QtGui import QFont, QIcon
 import sys
@@ -23,6 +23,8 @@ from .hatali_isler_page import HataliIslerPage
 from .uzun_isler_page import UzunIslerPage
 from .log_page import LogPage
 from .data_manager_page import DataManagerPage
+from .components.feature_card import FeatureCard
+from .themes.theme_manager import ThemeManager
 
 
 class MainWindow(QMainWindow):
@@ -32,13 +34,16 @@ class MainWindow(QMainWindow):
         """MainWindow'u başlat"""
         super().__init__()
         
-        # Pencere özellikleri
-        self.setWindowTitle("Excel Veri Görüntüleme Uygulaması v0.7 - Dark Mode")
-        self.setGeometry(100, 100, 1200, 800)  # x, y, genişlik, yükseklik
-        self.setMinimumSize(QSize(1000, 600))
+        # Theme Manager
+        self.theme_manager = ThemeManager()
         
-        # DARK MODE UYGULA! 🎨
-        self._apply_dark_theme()
+        # Pencere özellikleri
+        self.setWindowTitle("Excel Veri Görüntüleme Uygulaması v2.5.0 - Modern Design")
+        self.setGeometry(100, 100, 1280, 850)  # x, y, genişlik, yükseklik
+        self.setMinimumSize(QSize(1100, 700))
+        
+        # MODERN THEME UYGULA! 🎨
+        self._apply_theme()
         
         # Sayfa yönetimi için StackedWidget
         self.stacked_widget = QStackedWidget()
@@ -52,8 +57,14 @@ class MainWindow(QMainWindow):
         # İlk sayfayı göster
         self.stacked_widget.setCurrentIndex(0)
     
-    def _apply_dark_theme(self):
-        """Modern Dark Mode Teması Uygula 🎨"""
+    def _apply_theme(self, theme_name=None):
+        """Modern Tema Uygula 🎨"""
+        # Theme Manager'dan stylesheet al
+        stylesheet = self.theme_manager.get_stylesheet(theme_name)
+        self.setStyleSheet(stylesheet)
+    
+    def _apply_dark_theme_OLD(self):
+        """ESKİ Modern Dark Mode Teması - KULLANILMIYOR"""
         dark_stylesheet = """
         /* Ana Pencere ve Genel Stil */
         QMainWindow, QWidget {
@@ -264,8 +275,8 @@ class MainWindow(QMainWindow):
             padding: 6px;
         }
         """
-        
-        self.setStyleSheet(dark_stylesheet)
+        # Bu fonksiyon artık kullanılmıyor - theme_manager kullanılıyor
+        pass
     
     def _create_menu_bar(self):
         """Menü çubuğunu oluştur"""
@@ -372,72 +383,136 @@ class MainWindow(QMainWindow):
         self.stacked_widget.addWidget(self.data_manager_page)  # Index 5
     
     def _create_home_page(self):
-        """Ana sayfa (hoş geldiniz ekranı) oluştur"""
+        """Ana sayfa (modern card-based) oluştur"""
         page = QWidget()
-        layout = QVBoxLayout()
+        main_layout = QVBoxLayout()
+        main_layout.setSpacing(30)
+        main_layout.setContentsMargins(40, 40, 40, 40)
         
-        # Başlık
-        title = QLabel("Excel Veri Görüntüleme Uygulaması")
-        title_font = QFont()
-        title_font.setPointSize(24)
-        title_font.setBold(True)
+        # Başlık bölümü
+        header_layout = QVBoxLayout()
+        header_layout.setSpacing(10)
+        
+        # Ana başlık
+        title = QLabel("🎨 EXCEL VERİ GÖRÜNTÜLEYİCİ")
+        title_font = QFont('Inter', 32, QFont.Bold)
         title.setFont(title_font)
         title.setAlignment(Qt.AlignCenter)
-        layout.addWidget(title)
+        title.setStyleSheet("color: white; letter-spacing: -1px;")
+        header_layout.addWidget(title)
         
-        # Versiyon (v2.0.1 GÜNCELLENDİ!)
-        version = QLabel("Versiyon 2.0.1 - Major Özellikler Eklendi!")
-        version_font = QFont()
-        version_font.setPointSize(12)
+        # Versiyon
+        version = QLabel("v2.5.0 Design Refresh - Modern Glassmorphism")
+        version_font = QFont('Inter', 13)
         version.setFont(version_font)
         version.setAlignment(Qt.AlignCenter)
-        version.setStyleSheet("color: #4CAF50; font-weight: bold;")
-        layout.addWidget(version)
+        version.setStyleSheet("color: rgba(255, 255, 255, 0.7); font-weight: 500;")
+        header_layout.addWidget(version)
         
-        # Boşluk
-        layout.addStretch(1)
+        main_layout.addLayout(header_layout)
+        main_layout.addSpacing(20)
         
-        # Bilgi (v2.0.1 GÜNCELLENDİ!)
-        info = QLabel("Hoş geldiniz!\n\nBu uygulama Excel verilerini görüntülemek için geliştirilmiştir.\n\n"
-                     "📊 Hatalı İşler Detay (Ctrl+1) - 46 satır\n"
-                     "⏱️ Uzun İşler Detay (Ctrl+2) - 96 satır\n"
-                     "📝 Log Sistemi (Ctrl+L)\n"
-                     "🔍 Gelişmiş Arama ve Filtreleme\n"
-                     "🎨 Modern Dark Theme")
-        info_font = QFont()
-        info_font.setPointSize(11)
-        info.setFont(info_font)
-        info.setAlignment(Qt.AlignCenter)
-        layout.addWidget(info)
+        # Feature Cards - Grid Layout
+        cards_layout = QGridLayout()
+        cards_layout.setSpacing(25)
         
-        layout.addStretch(1)
+        # Arama Kartı
+        search_card = FeatureCard(
+            icon="🔍",
+            title="Arama",
+            subtitle="Toplu JCL Arama",
+            count=142
+        )
+        search_card.clicked.connect(self._go_to_search_page)
+        cards_layout.addWidget(search_card, 0, 0)
         
-        # Başla butonu
-        start_btn = QPushButton("Başla")
-        start_btn.setMinimumSize(200, 50)
-        start_btn_font = QFont()
-        start_btn_font.setPointSize(14)
-        start_btn.setFont(start_btn_font)
-        start_btn.clicked.connect(self._go_to_search_page)
+        # Hatalı İşler Kartı
+        hatali_card = FeatureCard(
+            icon="❌",
+            title="Hatalı İşler",
+            subtitle="Detaylı Analiz",
+            count=46
+        )
+        hatali_card.clicked.connect(self._go_to_hatali_isler_page)
+        cards_layout.addWidget(hatali_card, 0, 1)
         
-        # Butonu ortala
-        button_layout = QVBoxLayout()
-        button_layout.addWidget(start_btn, alignment=Qt.AlignCenter)
-        layout.addLayout(button_layout)
+        # Uzun İşler Kartı
+        uzun_card = FeatureCard(
+            icon="⏱️",
+            title="Uzun İşler",
+            subtitle="Performans Takibi",
+            count=96
+        )
+        uzun_card.clicked.connect(self._go_to_uzun_isler_page)
+        cards_layout.addWidget(uzun_card, 0, 2)
         
-        layout.addStretch(2)
+        main_layout.addLayout(cards_layout)
+        main_layout.addSpacing(15)
         
-        # Durum bilgisi
-        status = QLabel("✅ ExcelReader hazır | ✅ 142 satır test edildi | ✅ 5 sheet desteği")
-        status_font = QFont()
-        status_font.setPointSize(9)
-        status.setFont(status_font)
-        status.setAlignment(Qt.AlignCenter)
-        status.setStyleSheet("color: green;")
-        layout.addWidget(status)
+        # Quick Access Buttons
+        quick_layout = QVBoxLayout()
+        quick_layout.setSpacing(12)
         
-        page.setLayout(layout)
+        # Log button
+        log_btn = self._create_quick_button("📝 Log Sistemi", "CTRL+L")
+        log_btn.clicked.connect(self._go_to_log_page)
+        quick_layout.addWidget(log_btn)
+        
+        # Veri Yönetimi button
+        data_btn = self._create_quick_button("💾 Veri Yönetimi", "CTRL+D")
+        data_btn.clicked.connect(self._go_to_data_manager_page)
+        quick_layout.addWidget(data_btn)
+        
+        main_layout.addLayout(quick_layout)
+        
+        main_layout.addStretch()
+        
+        # Footer bilgisi
+        footer = QLabel("✨ Modern UI • 🎨 4 Tema • 🚀 Yüksek Performans • 💚 Kullanıcı Dostu")
+        footer_font = QFont('Inter', 10)
+        footer.setFont(footer_font)
+        footer.setAlignment(Qt.AlignCenter)
+        footer.setStyleSheet("color: rgba(255, 255, 255, 0.5); padding: 20px;")
+        main_layout.addWidget(footer)
+        
+        page.setLayout(main_layout)
+        
+        # Sayfa arka plan gradient
+        page.setStyleSheet("""
+            QWidget {
+                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                    stop:0 #1a0f2e,
+                    stop:1 #0f0a1a);
+            }
+        """)
+        
         return page
+    
+    def _create_quick_button(self, text, shortcut):
+        """Hızlı erişim butonu oluştur"""
+        btn = QPushButton(f"{text}          {shortcut}")
+        btn.setMinimumHeight(50)
+        btn.setMaximumHeight(60)
+        btn_font = QFont('Inter', 12, QFont.Medium)
+        btn.setFont(btn_font)
+        btn.setStyleSheet("""
+            QPushButton {
+                background: rgba(255, 255, 255, 0.05);
+                border: 2px solid rgba(255, 255, 255, 0.1);
+                border-radius: 12px;
+                padding: 12px 24px;
+                text-align: left;
+                color: rgba(255, 255, 255, 0.9);
+            }
+            QPushButton:hover {
+                background: rgba(255, 255, 255, 0.08);
+                border: 2px solid rgba(255, 255, 255, 0.2);
+            }
+            QPushButton:pressed {
+                background: rgba(255, 255, 255, 0.12);
+            }
+        """)
+        return btn
     
     def _go_to_search_page(self):
         """Arama sayfasına geç"""

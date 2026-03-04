@@ -31,6 +31,9 @@ class DataManagerPage(QWidget):
         # Excel okuyucu
         self.reader = ExcelReader()
         
+        # Veri durumu bayrağı (temizlendiyse True)
+        self.data_cleared = False
+        
         # UI oluştur
         self._create_ui()
         
