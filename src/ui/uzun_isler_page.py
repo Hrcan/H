@@ -23,6 +23,10 @@ import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from core.excel_reader import ExcelReader
+from core.logger import get_logger
+
+# Logger'ı başlat
+logger = get_logger()
 
 
 class UzunIslerPage(QWidget):
@@ -272,22 +276,21 @@ class UzunIslerPage(QWidget):
                 self.stats_label.setText(f"✅ Toplam {row_count} uzun iş yüklendi")
                 self.stats_label.setStyleSheet("color: #FF9800; padding: 10px; font-weight: bold;")
                 
-                print(f"[OK] Uzun İşler yüklendi: {row_count} satır")
+                logger.info(f"Uzun İşler sayfası yüklendi: {row_count} satır")
             else:
+                logger.warning("Uzun İşler verisi bulunamadı")
                 self.stats_label.setText("⚠️ Veri bulunamadı")
                 self.stats_label.setStyleSheet("color: orange; padding: 10px;")
                 
         except FileNotFoundError as e:
-            error_msg = f"Excel dosyası bulunamadı:\n{e}"
-            print(f"[HATA] {error_msg}")
-            QMessageBox.critical(self, "Hata", error_msg)
+            logger.error(f"Uzun İşler Excel dosyası bulunamadı: {e}")
+            QMessageBox.critical(self, "Hata", f"Excel dosyası bulunamadı:\n{e}")
             self.stats_label.setText("❌ Dosya bulunamadı")
             self.stats_label.setStyleSheet("color: red; padding: 10px;")
             
         except Exception as e:
-            error_msg = f"Veri yükleme hatası:\n{e}"
-            print(f"[HATA] {error_msg}")
-            QMessageBox.critical(self, "Hata", error_msg)
+            logger.error(f"Uzun İşler veri yükleme hatası: {e}", exc_info=True)
+            QMessageBox.critical(self, "Hata", f"Veri yükleme hatası:\n{e}")
             self.stats_label.setText("❌ Yükleme hatası")
             self.stats_label.setStyleSheet("color: red; padding: 10px;")
     
@@ -303,7 +306,7 @@ class UzunIslerPage(QWidget):
             for ekip in ekip_list:
                 self.ekip_filter.addItem(ekip)
             
-            print(f"[OK] {len(ekip_list)} benzersiz ekip yüklendi")
+            logger.info(f"Uzun İşler: {len(ekip_list)} benzersiz ekip yüklendi")
     
     def _populate_sheet_filter(self):
         """Sheet filtresini doldur (YENİ!)"""
@@ -317,7 +320,7 @@ class UzunIslerPage(QWidget):
             for sheet in sheet_list:
                 self.sheet_filter.addItem(sheet)
             
-            print(f"[OK] {len(sheet_list)} benzersiz sheet yüklendi")
+            logger.info(f"Uzun İşler: {len(sheet_list)} benzersiz sheet yüklendi")
     
     def _populate_table(self):
         """Tabloyu verilerle doldur"""
@@ -374,7 +377,7 @@ class UzunIslerPage(QWidget):
             if self.table.columnWidth(i) < 100:
                 self.table.setColumnWidth(i, 100)
         
-        print(f"[OK] Tablo güncellendi: {row_count} satır, {col_count} sütun")
+        logger.debug(f"Uzun İşler tablosu güncellendi: {row_count} satır, {col_count} sütun")
     
     def _apply_filters(self):
         """Filtreleri uygula"""
@@ -456,7 +459,7 @@ class UzunIslerPage(QWidget):
         # Filtreleri uygula (otomatik olarak uygulanacak)
         self._apply_filters()
         
-        print("[OK] Tüm filtreler temizlendi (JCL, Ekip, Sheet, Sıralama)")
+        logger.info("Uzun İşler: Tüm filtreler temizlendi")
 
 
 if __name__ == "__main__":

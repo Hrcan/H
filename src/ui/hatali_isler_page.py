@@ -23,6 +23,10 @@ import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from core.excel_reader import ExcelReader
+from core.logger import get_logger
+
+# Logger'ı başlat
+logger = get_logger()
 
 
 class HataliIslerPage(QWidget):
@@ -285,22 +289,21 @@ class HataliIslerPage(QWidget):
                 self.stats_label.setText(f"✅ Toplam {row_count} hatalı iş yüklendi")
                 self.stats_label.setStyleSheet("color: #4CAF50; padding: 10px; font-weight: bold;")
                 
-                print(f"[OK] Hatalı İşler yüklendi: {row_count} satır")
+                logger.info(f"Hatalı İşler sayfası yüklendi: {row_count} satır")
             else:
+                logger.warning("Hatalı İşler verisi bulunamadı")
                 self.stats_label.setText("⚠️ Veri bulunamadı")
                 self.stats_label.setStyleSheet("color: orange; padding: 10px;")
                 
         except FileNotFoundError as e:
-            error_msg = f"Excel dosyası bulunamadı:\n{e}"
-            print(f"[HATA] {error_msg}")
-            QMessageBox.critical(self, "Hata", error_msg)
+            logger.error(f"Hatalı İşler Excel dosyası bulunamadı: {e}")
+            QMessageBox.critical(self, "Hata", f"Excel dosyası bulunamadı:\n{e}")
             self.stats_label.setText("❌ Dosya bulunamadı")
             self.stats_label.setStyleSheet("color: red; padding: 10px;")
             
         except Exception as e:
-            error_msg = f"Veri yükleme hatası:\n{e}"
-            print(f"[HATA] {error_msg}")
-            QMessageBox.critical(self, "Hata", error_msg)
+            logger.error(f"Hatalı İşler veri yükleme hatası: {e}", exc_info=True)
+            QMessageBox.critical(self, "Hata", f"Veri yükleme hatası:\n{e}")
             self.stats_label.setText("❌ Yükleme hatası")
             self.stats_label.setStyleSheet("color: red; padding: 10px;")
     
@@ -316,7 +319,7 @@ class HataliIslerPage(QWidget):
             for ekip in ekip_list:
                 self.ekip_filter.addItem(ekip)
             
-            print(f"[OK] {len(ekip_list)} benzersiz ekip yüklendi")
+            logger.info(f"Hatalı İşler: {len(ekip_list)} benzersiz ekip yüklendi")
     
     def _populate_table(self):
         """Tabloyu verilerle doldur"""
@@ -359,7 +362,7 @@ class HataliIslerPage(QWidget):
             if self.table.columnWidth(i) < 100:
                 self.table.setColumnWidth(i, 100)
         
-        print(f"[OK] Tablo güncellendi: {row_count} satır, {col_count} sütun")
+        logger.debug(f"Hatalı İşler tablosu güncellendi: {row_count} satır, {col_count} sütun")
     
     def _apply_filters(self):
         """Filtreleri uygula (YENİ! v1.1 - Ay/Yıl + Boş Mesaj)"""
@@ -455,7 +458,7 @@ class HataliIslerPage(QWidget):
         # Ama yine de manuel çağır
         self._apply_filters()
         
-        print("[OK] Tüm filtreler temizlendi (JCL, Ekip, Ay, Yıl, Sıralama)")
+        logger.info("Hatalı İşler: Tüm filtreler temizlendi")
 
 
 if __name__ == "__main__":

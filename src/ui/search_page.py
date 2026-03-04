@@ -21,6 +21,10 @@ import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from core.excel_reader import ExcelReader
+from core.logger import get_logger
+
+# Logger'ı başlat
+logger = get_logger()
 
 
 class SearchPage(QWidget):
@@ -330,12 +334,12 @@ class SearchPage(QWidget):
                 self._show_real_results(empty_df, jcl_display, ekip, excel_type)
         
         except Exception as e:
+            logger.error(f"Arama sırasında hata: {e}", exc_info=True)
             QMessageBox.critical(
                 self,
                 "Hata",
                 f"Arama sırasında hata oluştu:\n\n{str(e)}"
             )
-            print(f"[HATA] Arama hatasi: {e}")
     
     def _show_temporary_results(self, jcl_name, ekip, excel_type):
         """Geçici sonuçları göster (demo amaçlı)"""
@@ -409,19 +413,15 @@ class SearchPage(QWidget):
             # Ekip listesini ComboBox'a ekle
             self._populate_ekip_combo()
             
-            print("[OK] Excel verileri basariyla yuklendi!")
-            print(f"   - Hatali Isler: {len(self.hatali_df)} satir")
-            print(f"   - Uzun Isler: {len(self.uzun_df)} satir")
-            print(f"   - Toplam: {len(self.hatali_df) + len(self.uzun_df)} satir")
+            total_rows = len(self.hatali_df) + len(self.uzun_df)
+            logger.info(f"Excel verileri başarıyla yüklendi: Hatalı İşler={len(self.hatali_df)} satır, Uzun İşler={len(self.uzun_df)} satır, Toplam={total_rows} satır")
             
         except FileNotFoundError as e:
-            error_msg = f"Excel dosyasi bulunamadi: {e}"
-            print(f"[HATA] {error_msg}")
-            QMessageBox.critical(self, "Hata", error_msg)
+            logger.error(f"Excel dosyası bulunamadı: {e}")
+            QMessageBox.critical(self, "Hata", f"Excel dosyası bulunamadı: {e}")
         except Exception as e:
-            error_msg = f"Excel yukleme hatasi: {e}"
-            print(f"[HATA] {error_msg}")
-            QMessageBox.critical(self, "Hata", error_msg)
+            logger.error(f"Excel yükleme hatası: {e}", exc_info=True)
+            QMessageBox.critical(self, "Hata", f"Excel yükleme hatası: {e}")
     
     def _populate_ekip_combo(self):
         """Gerçek ekip listesini ComboBox'a ekle"""
@@ -444,10 +444,10 @@ class SearchPage(QWidget):
             for ekip in ekip_list:
                 self.ekip_combo.addItem(ekip)
             
-            print(f"[OK] {len(ekip_list)} benzersiz ekip ComboBox'a eklendi")
+            logger.info(f"{len(ekip_list)} benzersiz ekip ComboBox'a eklendi")
             
         except Exception as e:
-            print(f"[HATA] Ekip listesi yukleme hatasi: {e}")
+            logger.error(f"Ekip listesi yükleme hatası: {e}", exc_info=True)
     
     def _show_real_results(self, results_df, jcl_name, ekip, excel_type):
         """Gerçek arama sonuçlarını göster"""

@@ -10,11 +10,10 @@ Desteklenen formatlar:
 import pandas as pd
 from pathlib import Path
 from typing import Optional, List, Dict
-import logging
+from src.core.logger import get_logger
 
-# Logging ayarları
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+# AppLogger kullan
+logger = get_logger()
 
 
 class ExcelReader:
