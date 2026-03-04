@@ -30,7 +30,7 @@ logger = get_logger()
 class SearchPage(QWidget):
     """Arama sayfası widget'ı"""
     
-    def __init__(self):
+    def __init__(self, load_data=True):
         """SearchPage'i başlat"""
         super().__init__()
         
@@ -38,6 +38,7 @@ class SearchPage(QWidget):
         self.reader = ExcelReader()
         self.hatali_df = None
         self.uzun_df = None
+        self.load_data_enabled = load_data
         
         # Layout oluştur
         main_layout = QVBoxLayout()
@@ -79,8 +80,11 @@ class SearchPage(QWidget):
         
         self.setLayout(main_layout)
         
-        # Layout oluştuktan sonra Excel verilerini yükle
-        self._load_excel_data()
+        # Layout oluştuktan sonra Excel verilerini yükle (sadece enabled ise)
+        if self.load_data_enabled:
+            self._load_excel_data()
+        else:
+            logger.info("Search Page: Veri yükleme devre dışı (load_data=False)")
     
     def _create_search_criteria(self):
         """Arama kriterleri bölümünü oluştur"""
@@ -102,12 +106,12 @@ class SearchPage(QWidget):
         
         self.jcl_input = QTextEdit()  # QLineEdit yerine QTextEdit (çok satırlı)
         self.jcl_input.setPlaceholderText(
-            "Her satıra bir JCL adı yazın (toplu arama):\n"
-            "PKRBI330\n"
-            "PMUAI012\n"
-            "POPGG001\n"
-            "...\n\n"
-            "Veya tek JCL için arama yapabilirsiniz"
+            "Her satıra bir JCL adı yazın (toplu arama):\n\n"
+            "Örnek:\n"
+            "JOBNAME1\n"
+            "JOBNAME2\n"
+            "JOBNAME3\n\n"
+            "💡 Tek JCL için de arama yapabilirsiniz"
         )
         self.jcl_input.setMinimumHeight(100)  # Daha büyük alan
         self.jcl_input.setMaximumHeight(150)

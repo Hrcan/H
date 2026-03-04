@@ -383,110 +383,176 @@ class MainWindow(QMainWindow):
         self.stacked_widget.addWidget(self.data_manager_page)  # Index 5
     
     def _create_home_page(self):
-        """Ana sayfa (modern card-based) oluştur"""
+        """Ana sayfa - Modern Dashboard Tasarımı"""
         page = QWidget()
         main_layout = QVBoxLayout()
-        main_layout.setSpacing(30)
-        main_layout.setContentsMargins(40, 40, 40, 40)
+        main_layout.setSpacing(20)
+        main_layout.setContentsMargins(30, 30, 30, 30)
         
-        # Başlık bölümü
+        # Üst Başlık - Daha kompakt
         header_layout = QVBoxLayout()
-        header_layout.setSpacing(10)
+        header_layout.setSpacing(5)
         
-        # Ana başlık
-        title = QLabel("🎨 EXCEL VERİ GÖRÜNTÜLEYİCİ")
-        title_font = QFont('Inter', 32, QFont.Bold)
+        title = QLabel("📊 EXCEL ANALİZ PLATFORMU")
+        title_font = QFont('Segoe UI', 24, QFont.Bold)
         title.setFont(title_font)
         title.setAlignment(Qt.AlignCenter)
-        title.setStyleSheet("color: white; letter-spacing: -1px;")
+        title.setStyleSheet("color: white; letter-spacing: 1px; padding: 10px;")
         header_layout.addWidget(title)
         
-        # Versiyon
-        version = QLabel("v2.5.0 Design Refresh - Modern Glassmorphism")
-        version_font = QFont('Inter', 13)
-        version.setFont(version_font)
-        version.setAlignment(Qt.AlignCenter)
-        version.setStyleSheet("color: rgba(255, 255, 255, 0.7); font-weight: 500;")
-        header_layout.addWidget(version)
+        subtitle = QLabel("Verilerinizi Analiz Edin • Hızlı Arama • Detaylı Raporlama")
+        subtitle_font = QFont('Segoe UI', 11)
+        subtitle.setFont(subtitle_font)
+        subtitle.setAlignment(Qt.AlignCenter)
+        subtitle.setStyleSheet("color: rgba(255, 255, 255, 0.6);")
+        header_layout.addWidget(subtitle)
         
         main_layout.addLayout(header_layout)
-        main_layout.addSpacing(20)
+        main_layout.addSpacing(10)
         
-        # Feature Cards - Grid Layout
-        cards_layout = QGridLayout()
-        cards_layout.setSpacing(25)
+        # Ana İşlevler - 2x3 Grid
+        features_grid = QGridLayout()
+        features_grid.setSpacing(15)
         
-        # Arama Kartı
-        search_card = FeatureCard(
-            icon="🔍",
-            title="Arama",
-            subtitle="Toplu JCL Arama",
-            count=142
-        )
-        search_card.clicked.connect(self._go_to_search_page)
-        cards_layout.addWidget(search_card, 0, 0)
+        # Satır 1
+        features_grid.addWidget(self._create_feature_button(
+            "🔍", "ARAMA", "Toplu JCL Arama\n142 Kayıt", 
+            self._go_to_search_page, "#4A90E2"
+        ), 0, 0)
         
-        # Hatalı İşler Kartı
-        hatali_card = FeatureCard(
-            icon="❌",
-            title="Hatalı İşler",
-            subtitle="Detaylı Analiz",
-            count=46
-        )
-        hatali_card.clicked.connect(self._go_to_hatali_isler_page)
-        cards_layout.addWidget(hatali_card, 0, 1)
+        features_grid.addWidget(self._create_feature_button(
+            "❌", "HATALI İŞLER", "Detaylı Analiz\n46 Kayıt",
+            self._go_to_hatali_isler_page, "#E74C3C"
+        ), 0, 1)
         
-        # Uzun İşler Kartı
-        uzun_card = FeatureCard(
-            icon="⏱️",
-            title="Uzun İşler",
-            subtitle="Performans Takibi",
-            count=96
-        )
-        uzun_card.clicked.connect(self._go_to_uzun_isler_page)
-        cards_layout.addWidget(uzun_card, 0, 2)
+        features_grid.addWidget(self._create_feature_button(
+            "⏱️", "UZUN İŞLER", "Performans Takibi\n96 Kayıt",
+            self._go_to_uzun_isler_page, "#F39C12"
+        ), 0, 2)
         
-        main_layout.addLayout(cards_layout)
-        main_layout.addSpacing(15)
+        # Satır 2
+        features_grid.addWidget(self._create_feature_button(
+            "📥", "EXCEL YÜKLE", "Yeni Dosya Yükle\nÇoklu Seçim",
+            self._load_excel, "#9B59B6"
+        ), 1, 0)
         
-        # Quick Access Buttons
-        quick_layout = QVBoxLayout()
-        quick_layout.setSpacing(12)
+        features_grid.addWidget(self._create_feature_button(
+            "📝", "LOG SİSTEMİ", "Uygulama Logları\nGerçek Zamanlı",
+            self._go_to_log_page, "#1ABC9C"
+        ), 1, 1)
         
-        # Log button
-        log_btn = self._create_quick_button("📝 Log Sistemi", "CTRL+L")
-        log_btn.clicked.connect(self._go_to_log_page)
-        quick_layout.addWidget(log_btn)
+        features_grid.addWidget(self._create_feature_button(
+            "💾", "VERİ YÖNETİMİ", "Veri Temizleme\nYeniden Yükleme",
+            self._go_to_data_manager_page, "#3498DB"
+        ), 1, 2)
         
-        # Veri Yönetimi button
-        data_btn = self._create_quick_button("💾 Veri Yönetimi", "CTRL+D")
-        data_btn.clicked.connect(self._go_to_data_manager_page)
-        quick_layout.addWidget(data_btn)
-        
-        main_layout.addLayout(quick_layout)
+        main_layout.addLayout(features_grid)
         
         main_layout.addStretch()
         
-        # Footer bilgisi
-        footer = QLabel("✨ Modern UI • 🎨 4 Tema • 🚀 Yüksek Performans • 💚 Kullanıcı Dostu")
-        footer_font = QFont('Inter', 10)
-        footer.setFont(footer_font)
-        footer.setAlignment(Qt.AlignCenter)
-        footer.setStyleSheet("color: rgba(255, 255, 255, 0.5); padding: 20px;")
-        main_layout.addWidget(footer)
+        # Alt Bilgi - Daha minimal
+        footer_layout = QHBoxLayout()
+        footer_layout.setSpacing(20)
+        
+        info_labels = [
+            "✨ Modern UI",
+            "🎨 4 Farklı Tema",
+            "🚀 Yüksek Performans",
+            "💚 Kolay Kullanım"
+        ]
+        
+        for info in info_labels:
+            label = QLabel(info)
+            label.setFont(QFont('Segoe UI', 9))
+            label.setStyleSheet("color: rgba(255, 255, 255, 0.4);")
+            footer_layout.addWidget(label)
+        
+        footer_layout.insertStretch(0)
+        footer_layout.addStretch()
+        
+        main_layout.addLayout(footer_layout)
         
         page.setLayout(main_layout)
         
-        # Sayfa arka plan gradient
+        # Gradient arka plan
         page.setStyleSheet("""
             QWidget {
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 #1a0f2e,
-                    stop:1 #0f0a1a);
+                background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                    stop:0 #1a1a2e,
+                    stop:0.5 #16213e,
+                    stop:1 #0f3460);
             }
         """)
         
         return page
+    
+    def _create_feature_button(self, icon, title, subtitle, callback, color):
+        """Modern özellik butonu oluştur - TEMİZ TASARIM"""
+        btn = QPushButton()
+        btn.setCursor(Qt.PointingHandCursor)
+        btn.clicked.connect(callback)
+        btn.setMinimumHeight(150)
+        btn.setMaximumHeight(170)
+        
+        # İç widget ve layout
+        inner_widget = QWidget()
+        inner_widget.setAttribute(Qt.WA_TransparentForMouseEvents)
+        inner_layout = QVBoxLayout(inner_widget)
+        inner_layout.setSpacing(8)
+        inner_layout.setContentsMargins(15, 20, 15, 20)
+        
+        # Emoji/İkon
+        icon_label = QLabel(icon)
+        icon_font = QFont('Segoe UI Emoji', 40)
+        icon_label.setFont(icon_font)
+        icon_label.setAlignment(Qt.AlignCenter)
+        icon_label.setStyleSheet("color: white;")
+        inner_layout.addWidget(icon_label)
+        
+        # Başlık
+        title_label = QLabel(title)
+        title_font = QFont('Segoe UI', 14, QFont.Bold)
+        title_label.setFont(title_font)
+        title_label.setAlignment(Qt.AlignCenter)
+        title_label.setStyleSheet("color: white;")
+        inner_layout.addWidget(title_label)
+        
+        # Alt başlık
+        subtitle_label = QLabel(subtitle)
+        subtitle_font = QFont('Segoe UI', 10)
+        subtitle_label.setFont(subtitle_font)
+        subtitle_label.setAlignment(Qt.AlignCenter)
+        subtitle_label.setWordWrap(True)
+        subtitle_label.setStyleSheet("color: rgba(255, 255, 255, 0.8);")
+        inner_layout.addWidget(subtitle_label)
+        
+        # Widget'ı butona ekle
+        btn_layout = QVBoxLayout(btn)
+        btn_layout.setContentsMargins(0, 0, 0, 0)
+        btn_layout.addWidget(inner_widget)
+        
+        # Modern stil (CSS Spam düzeltildi - transform kaldırıldı)
+        btn.setStyleSheet(f"""
+            QPushButton {{
+                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                    stop:0 {color},
+                    stop:1 {color}aa);
+                border: 2px solid rgba(255, 255, 255, 0.15);
+                border-radius: 12px;
+            }}
+            QPushButton:hover {{
+                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                    stop:0 {color},
+                    stop:1 {color}cc);
+                border: 2px solid rgba(255, 255, 255, 0.3);
+            }}
+            QPushButton:pressed {{
+                background: {color};
+                border: 2px solid rgba(255, 255, 255, 0.5);
+            }}
+        """)
+        
+        return btn
     
     def _create_quick_button(self, text, shortcut):
         """Hızlı erişim butonu oluştur"""
@@ -552,42 +618,68 @@ class MainWindow(QMainWindow):
         )
         
         if file_paths:
-            # Dosyalar kategorize et
-            hatali_files = []
-            uzun_files = []
+            # Dosyaları YOLLARIYLA kategorize et (sadece isim değil!)
+            hatali_paths = []
+            uzun_paths = []
             unknown_files = []
             
             for file_path in file_paths:
                 file_name = os.path.basename(file_path)
                 
                 if "Hatalı" in file_name or "HATALI" in file_name.upper():
-                    hatali_files.append(file_name)
+                    hatali_paths.append(file_path)  # Tam yolu sakla
                 elif "Uzun" in file_name or "UZUN" in file_name.upper():
-                    uzun_files.append(file_name)
+                    uzun_paths.append(file_path)  # Tam yolu sakla
                 else:
                     unknown_files.append(file_name)
             
             # Yükleme sonuçları
             loaded = []
             errors = []
+            actual_loaded_count = 0
             
             # Hatalı İşler dosyalarını yükle
-            if hatali_files:
+            if hatali_paths:
                 try:
+                    # Sayfayı yeniden oluştur (default dosyaları yükler)
                     self.hatali_isler_page = HataliIslerPage()
                     self.stacked_widget.removeWidget(self.stacked_widget.widget(2))
                     self.stacked_widget.insertWidget(2, self.hatali_isler_page)
-                    loaded.append(f"✅ Hatalı İşler: {len(hatali_files)} dosya")
+                    loaded.append(f"✅ Hatalı İşler: {len(hatali_paths)} dosya seçildi")
+                    actual_loaded_count += 1
+                    
+                    # ÖNEMLİ NOT: Şu anda sadece default dosya yükleniyor!
+                    # Çoklu dosya desteği için ExcelReader'a merge/concat mantığı gerekiyor
+                    if len(hatali_paths) > 1:
+                        loaded.append(f"   ⚠️ Uyarı: Şu an sadece default dosya yüklendi")
+                        loaded.append(f"   📋 Seçilen dosyalar:")
+                        for path in hatali_paths[:3]:
+                            loaded.append(f"      • {os.path.basename(path)}")
+                        if len(hatali_paths) > 3:
+                            loaded.append(f"      ... ve {len(hatali_paths)-3} dosya daha")
+                            
                 except Exception as e:
                     errors.append(f"❌ Hatalı İşler: {str(e)}")
             
             # Uzun İşler dosyalarını yükle
-            if uzun_files:
+            if uzun_paths:
                 try:
+                    # Sayfayı yeniden oluştur (default dosyaları yükler)
                     self.uzun_isler_page = UzunIslerPage()
                     self.stacked_widget.removeWidget(self.stacked_widget.widget(4))
                     self.stacked_widget.insertWidget(4, self.uzun_isler_page)
-                    loaded.append(f"✅ Uzun İşler: {len(uzun_files)} dosya")
+                    loaded.append(f"✅ Uzun İşler: {len(uzun_paths)} dosya seçildi")
+                    actual_loaded_count += 1
+                    
+                    # ÖNEMLİ NOT: Şu anda sadece default dosya yükleniyor!
+                    if len(uzun_paths) > 1:
+                        loaded.append(f"   ⚠️ Uyarı: Şu an sadece default dosya yüklendi")
+                        loaded.append(f"   📋 Seçilen dosyalar:")
+                        for path in uzun_paths[:3]:
+                            loaded.append(f"      • {os.path.basename(path)}")
+                        if len(uzun_paths) > 3:
+                            loaded.append(f"      ... ve {len(uzun_paths)-3} dosya daha")
+                            
                 except Exception as e:
                     errors.append(f"❌ Uzun İşler: {str(e)}")
             
@@ -595,8 +687,15 @@ class MainWindow(QMainWindow):
             message_parts = []
             
             if loaded:
-                message_parts.append("📦 Yüklenen Excel Dosyaları:\n")
+                message_parts.append("📦 Excel Yükleme Durumu:\n")
                 message_parts.append("\n".join(loaded))
+                
+                # Çoklu dosya uyarısı
+                total_selected = len(hatali_paths) + len(uzun_paths)
+                if total_selected > actual_loaded_count:
+                    message_parts.append("\n\n💡 Çoklu Dosya Desteği:")
+                    message_parts.append("Şu anda sadece default Excel dosyaları yüklenmektedir.")
+                    message_parts.append("Gelecek versiyonda çoklu dosya birleştirme eklenecek.")
             
             if unknown_files:
                 message_parts.append(f"\n\n⚠️ Tanınmayan dosyalar ({len(unknown_files)}):")
@@ -614,12 +713,14 @@ class MainWindow(QMainWindow):
             if errors:
                 QMessageBox.warning(self, "Yükleme Tamamlandı (Hatalarla)", final_message)
             else:
-                QMessageBox.information(self, "Yükleme Başarılı", final_message)
+                QMessageBox.information(self, "Excel Yükleme", final_message)
             
             # Status bar güncelle
-            summary = f"{len(hatali_files)} Hatalı + {len(uzun_files)} Uzun İşler Excel yüklendi"
-            if unknown_files:
-                summary += f" ({len(unknown_files)} tanınmayan)"
+            summary = f"{actual_loaded_count} kategori yüklendi"
+            if len(hatali_paths) > 0:
+                summary += f" (Hatalı: {len(hatali_paths)} dosya seçildi)"
+            if len(uzun_paths) > 0:
+                summary += f" (Uzun: {len(uzun_paths)} dosya seçildi)"
             self.statusBar.showMessage(summary, 5000)
             
         else:
@@ -656,6 +757,53 @@ class MainWindow(QMainWindow):
         """
         
         QMessageBox.about(self, "Hakkında", about_text)
+    
+    def clear_all_data(self):
+        """Tüm yüklü verileri temizle ve sayfaları yeniden oluştur"""
+        try:
+            # Tüm sayfaları yeniden oluştur (VERİ YÜKLEMEDEN - load_data=False)
+            # Search page - JCL input'ları da temizlenir!
+            old_search = self.stacked_widget.widget(1)
+            self.search_page = SearchPage(load_data=False)  # ✅ VERİ YÜKLEME!
+            self.stacked_widget.removeWidget(old_search)
+            self.stacked_widget.insertWidget(1, self.search_page)
+            if old_search:
+                old_search.deleteLater()
+            
+            # Hatalı İşler page
+            old_hatali = self.stacked_widget.widget(2)
+            self.hatali_isler_page = HataliIslerPage(load_data=False)  # ✅ VERİ YÜKLEME!
+            self.stacked_widget.removeWidget(old_hatali)
+            self.stacked_widget.insertWidget(2, self.hatali_isler_page)
+            if old_hatali:
+                old_hatali.deleteLater()
+            
+            # Uzun İşler page
+            old_uzun = self.stacked_widget.widget(4)
+            self.uzun_isler_page = UzunIslerPage(load_data=False)  # ✅ VERİ YÜKLEME!
+            self.stacked_widget.removeWidget(old_uzun)
+            self.stacked_widget.insertWidget(4, self.uzun_isler_page)
+            if old_uzun:
+                old_uzun.deleteLater()
+            
+            # Data Manager page - son olarak yenile
+            old_data = self.stacked_widget.widget(5)
+            self.data_manager_page = DataManagerPage()
+            self.stacked_widget.removeWidget(old_data)
+            self.stacked_widget.insertWidget(5, self.data_manager_page)
+            if old_data:
+                old_data.deleteLater()
+            
+            # Ana sayfaya dön
+            self.stacked_widget.setCurrentIndex(0)
+            self.statusBar.showMessage("✅ Tüm veriler ve JCL'ler temizlendi!", 3000)
+            
+            return True
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
+            self.statusBar.showMessage(f"Temizleme hatası: {e}", 5000)
+            return False
     
     def _show_message(self, message):
         """Bilgi mesajı göster"""

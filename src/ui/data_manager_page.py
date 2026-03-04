@@ -269,20 +269,40 @@ class DataManagerPage(QWidget):
         
         if reply == QMessageBox.Yes:
             try:
-                # ExcelReader'ı sıfırla
-                self.reader = ExcelReader()
+                # Ana pencereyi bul ve clear_all_data çağır
+                from PyQt5.QtWidgets import QApplication
+                main_window = None
+                for widget in QApplication.topLevelWidgets():
+                    if widget.__class__.__name__ == 'MainWindow':
+                        main_window = widget
+                        break
                 
-                # Tabloyu güncelle
-                self._load_data_info()
-                
-                logger.info("Tüm veriler temizlendi")
-                QMessageBox.information(
-                    self,
-                    "Başarılı",
-                    "✅ Tüm veriler temizlendi!\n\n"
-                    "Yeni Excel dosyaları yüklemek için:\n"
-                    "Dosya → Excel Yükle (Ctrl+O)"
-                )
+                if main_window and hasattr(main_window, 'clear_all_data'):
+                    # MainWindow'daki global clear metodunu kullan
+                    success = main_window.clear_all_data()
+                    if success:
+                        logger.info("Tüm veriler temizlendi (MainWindow üzerinden)")
+                        QMessageBox.information(
+                            self,
+                            "Başarılı",
+                            "✅ Tüm veriler temizlendi!\n\n"
+                            "Ana sayfaya yönlendiriliyorsunuz.\n\n"
+                            "Yeni Excel dosyaları yüklemek için:\n"
+                            "Dosya → Excel Yükle (Ctrl+O)"
+                        )
+                    else:
+                        raise Exception("MainWindow.clear_all_data() false döndü")
+                else:
+                    # Fallback: Sadece bu sayfanın reader'ını temizle
+                    self.reader = ExcelReader()
+                    self._load_data_info()
+                    logger.warning("MainWindow bulunamadı, sadece local reader temizlendi")
+                    QMessageBox.warning(
+                        self,
+                        "Kısmi Temizlik",
+                        "⚠️ Sadece bu sayfanın verileri temizlendi.\n\n"
+                        "Diğer sayfaları temizlemek için uygulamayı yeniden başlatın."
+                    )
                 
             except Exception as e:
                 logger.error(f"Veri temizleme hatası: {e}", exc_info=True)

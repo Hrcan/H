@@ -223,7 +223,8 @@ class LogPage(QWidget):
             )
             self.stats_label.setStyleSheet("color: #4CAF50; padding: 5px;")
             
-            self.logger.info(f"Loglar yüklendi: {len(log_lines)} satır")
+            # Log spam önleme: Artık logger kullanmıyor (sessiz yükleme)
+            # self.logger.debug(f"Loglar yüklendi: {len(log_lines)} satır")
             
         except Exception as e:
             error_msg = f"Log yükleme hatası: {e}"

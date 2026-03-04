@@ -32,8 +32,12 @@ logger = get_logger()
 class HataliIslerPage(QWidget):
     """Hatalı İşler Detay Sayfası widget'ı"""
     
-    def __init__(self):
-        """HataliIslerPage'i başlat"""
+    def __init__(self, load_data=True):
+        """HataliIslerPage'i başlat
+        
+        Args:
+            load_data (bool): Başlangıçta Excel verilerini yükle (varsayılan: True)
+        """
         super().__init__()
         
         # ExcelReader ve veri hazırlığı
@@ -75,8 +79,14 @@ class HataliIslerPage(QWidget):
         
         self.setLayout(main_layout)
         
-        # Excel verilerini yükle
-        self._load_excel_data()
+        # Excel verilerini yükle (eğer isteniyorsa)
+        if load_data:
+            self._load_excel_data()
+        else:
+            # Veri yüklenmediğinde boş mesaj
+            self.stats_label.setText("📭 Veri yüklenmedi - Lütfen Excel dosyası yükleyin")
+            self.stats_label.setStyleSheet("color: #888; padding: 10px; font-weight: bold;")
+            logger.info("Hatalı İşler sayfası veri yüklemeden açıldı")
     
     def _create_filter_section(self):
         """Filtreleme bölümünü oluştur"""
