@@ -7,10 +7,100 @@
 
 ## [Unreleased] - Geliştirme Aşamasında
 
-### Planlanıyor (v2.1+)
+### Planlanıyor (v2.2+)
+- Logger yaygınlaştırma (tüm modüllere)
 - Tarih/Ay global filtreleme (FAZE 7)
 - TXT dosyası desteği (FAZE 9)
 - EXE derleme (FAZE 11)
+
+---
+
+## [2.1.2] - 2026-03-04 ✅ TAMAMLANDI - UI FIX (SEPARATOR) 🎨
+
+### Düzeltilenler 🐛
+- **Arama Sayfası UI Düzeltmesi**
+  - QTextEdit ile Ekip/Excel Türü label'ları üst üste biniyordu
+  - **Separator eklendi:** QFrame ile ayırıcı çizgi
+  - Label'lar tamamen ayrıldı
+  - MinimumWidth/MaximumWidth ile sabitlendi (100px)
+  - VBoxLayout ile düzenli yerleşim
+
+### Teknik Detaylar 🔧
+- Separator özellikleri:
+  - QFrame.HLine ile yatay çizgi
+  - QFrame.Sunken gölgeli görünüm
+  - #3d3d3d arka plan rengi
+  - 10px üst/alt margin
+
+### Test Durumu ✅
+- UI test edildi ve çalışıyor
+- Label'lar text box'a binmiyor
+- Git commit: 5bba710
+- GitHub push: BAŞARILI ✅
+
+---
+
+## [2.1.1] - 2026-03-04 ✅ TAMAMLANDI - UI FIX (MARGIN) 🎨
+
+### Düzeltilenler 🐛
+- **Arama Sayfası Label Hizalaması**
+  - Ekip label genişliği artırıldı (120px → 140px)
+  - Spacing artırıldı (10px → 15px)
+  - ContentsMargins eklendi (üst margin: 10px)
+  - Bold font eklendi
+  - Stretch factor eklendi
+
+### Test Durumu ✅
+- UI test edildi
+- İyileşme sağlandı ancak tam çözüm v2.1.2'de
+- Git commit: d6ee1f7
+- GitHub push: BAŞARILI ✅
+
+---
+
+## [2.1.0] - 2026-03-04 ✅ TAMAMLANDI - DOKÜMANTASYON 📝
+
+### Değiştirililer 🔄
+- **Ana Sayfa Güncellendi**
+  - Versiyon: "2.0.1 - Major Özellikler Eklendi!"
+  - Özellikler listesi güncellendi:
+    - Hatalı İşler Detay (Ctrl+1) - 46 satır
+    - Uzun İşler Detay (Ctrl+2) - 96 satır
+    - Log Sistemi (Ctrl+L)
+    - Modern Dark Theme
+  - Yeşil renkli versiyon yazısı (#4CAF50)
+
+- **PROGRESS.md Güncellendi**
+  - İlerleme: %60 → %65
+  - Son güncelleme: 2026-03-04 10:00
+  - FAZE 6 tamamlandı olarak işaretlendi
+
+### Test Durumu ✅
+- Dokümantasyon güncel
+- Git commit: c5e8478
+- GitHub push: BAŞARILI ✅
+
+---
+
+## [2.0.1] - 2026-03-04 ✅ TAMAMLANDI - BUG FIXES 🐛
+
+### Düzeltilenler 🐛
+- **Uzun İşler Excel Dosya Yolu**
+  - Dosya: `SAO_Ana_Sistemler_Uzun_Süren_İsler_(ARALIK_2024).xlsx` → YANLIŞ
+  - Düzeltildi: `SAO_Sistem_Operasyon_Uzun_Süren_İşler(ARALIK_2024).xlsx`
+  - Ctrl+2 sayfası artık Excel dosyasını buluyor
+
+- **Arama Sayfası Label Hizalaması**
+  - Label'lar text box'ın üstüne biniyordu
+  - Ekip label: 120px → 140px genişletildi
+  - Layout spacing eklendiğinde kısmen düzeldi
+  - Tam çözüm v2.1.2'de (separator ile)
+
+### Test Durumu ✅
+- Uzun İşler sayfası çalışıyor
+- 96 satır veri yükleniyor
+- Git commit: f319b24
+- GitHub push: BAŞARILI ✅
 
 ---
 
