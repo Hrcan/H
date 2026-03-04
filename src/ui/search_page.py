@@ -112,13 +112,25 @@ class SearchPage(QWidget):
         jcl_layout.addWidget(self.jcl_input)
         layout.addLayout(jcl_layout)
         
-        # Ekip seçimi - TAM DÜZELTİLDİ (v2.1.1)
-        ekip_layout = QHBoxLayout()
-        ekip_layout.setSpacing(15)  # Daha fazla boşluk
-        ekip_layout.setContentsMargins(0, 10, 0, 0)  # Üst margin ekle
+        # Separator - Text box ile diğer filtreler arasında
+        from PyQt5.QtWidgets import QFrame
+        separator = QFrame()
+        separator.setFrameShape(QFrame.HLine)
+        separator.setFrameShadow(QFrame.Sunken)
+        separator.setStyleSheet("background-color: #3d3d3d; margin: 10px 0;")
+        layout.addWidget(separator)
+        
+        # Ekip ve Excel Türü - TAM AYRILMIŞ (v2.1.2)
+        filters_layout = QVBoxLayout()
+        filters_layout.setSpacing(15)
+        
+        # Ekip seçimi
+        ekip_row = QHBoxLayout()
+        ekip_row.setSpacing(15)
         
         ekip_label = QLabel("Ekip:")
-        ekip_label.setFixedWidth(140)
+        ekip_label.setMinimumWidth(100)
+        ekip_label.setMaximumWidth(100)
         ekip_label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
         ekip_label_font = QFont()
         ekip_label_font.setBold(True)
@@ -135,17 +147,17 @@ class SearchPage(QWidget):
         self.ekip_combo.addItem("Ana Sistemler VTS")
         self.ekip_combo.setMinimumHeight(35)
         
-        ekip_layout.addWidget(ekip_label)
-        ekip_layout.addWidget(self.ekip_combo, 1)  # Stretch factor ekle
-        layout.addLayout(ekip_layout)
+        ekip_row.addWidget(ekip_label)
+        ekip_row.addWidget(self.ekip_combo, 1)
+        filters_layout.addLayout(ekip_row)
         
-        # Excel türü seçimi - TAM DÜZELTİLDİ (v2.1.1)
-        type_layout = QHBoxLayout()
-        type_layout.setSpacing(15)  # Daha fazla boşluk
-        type_layout.setContentsMargins(0, 10, 0, 0)  # Üst margin ekle
+        # Excel türü seçimi
+        type_row = QHBoxLayout()
+        type_row.setSpacing(15)
         
         type_label = QLabel("Excel Türü:")
-        type_label.setFixedWidth(140)
+        type_label.setMinimumWidth(100)
+        type_label.setMaximumWidth(100)
         type_label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
         type_label_font = QFont()
         type_label_font.setBold(True)
@@ -157,9 +169,11 @@ class SearchPage(QWidget):
         self.type_combo.addItem("Uzun İşler")
         self.type_combo.setMinimumHeight(35)
         
-        type_layout.addWidget(type_label)
-        type_layout.addWidget(self.type_combo, 1)  # Stretch factor ekle
-        layout.addLayout(type_layout)
+        type_row.addWidget(type_label)
+        type_row.addWidget(self.type_combo, 1)
+        filters_layout.addLayout(type_row)
+        
+        layout.addLayout(filters_layout)
         
         # Bilgi mesajı
         info_label = QLabel("💡 İpucu: Boş bırakılan alanlar tüm sonuçları getirir")
