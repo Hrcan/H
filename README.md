@@ -1,8 +1,8 @@
 # 📊 Excel Veri Görüntüleme Uygulaması
 
-**Versiyon:** 0.1.0 (Geliştirme Aşaması)  
-**Son Güncelleme:** 2026-03-03  
-**Durum:** 🟡 Aktif Geliştirme
+**Versiyon:** 2.0.0  
+**Son Güncelleme:** 2026-03-04  
+**Durum:** 🟢 Aktif - Major Özellikler Eklendi!
 
 Modern ve kullanıcı dostu bir masaüstü uygulaması ile Excel ve TXT dosyalarındaki JCL (Job Control Language) verilerini görüntüleyin, filtreleyin ve analiz edin.
 
@@ -14,13 +14,15 @@ Bu uygulama, sistem operasyon raporlarındaki (Hatalı İşler ve Uzun Süren İ
 
 ### Temel Özellikler
 
-- ✅ **Excel Dosyası Desteği:** Hatalı İşler ve Uzun Süren İşler raporlarını okuma
-- ✅ **Multi-Sheet Okuma:** Tek Excel'de birden fazla sayfa desteği
-- ✅ **Akıllı Arama:** JCL adı ve ekip bazlı filtreleme
-- ✅ **Tarih/Ay Seçimi:** Checkbox ile esnek tarih filtreleme
-- ✅ **Detaylı Görünüm:** Hem hatalı hem uzun işleri yan yana görüntüleme
-- 🚧 **TXT Dosyası Desteği:** (Yakında)
-- 🚧 **Ekip Atama:** TXT'den okunan verilere ekip bilgisi ekleme (Yakında)
+- ✅ **Hatalı İşler Detay:** 46 satır hatalı iş verisi, ay/yıl filtreleme, mor-pembe gradient
+- ✅ **Uzun İşler Detay:** 96 satır uzun iş verisi, sheet filtresi, turuncu gradient, 60+ dakika vurgu
+- ✅ **Log Sistemi:** Renkli log görüntüleme, otomatik yenileme, log seviyeleri
+- ✅ **Excel Dosyası Desteği:** Multi-sheet okuma (5 sheet)
+- ✅ **Modern Dark Theme:** Gradient başlıklar, hover efektleri
+- ✅ **Akıllı Filtreleme:** JCL adı, Ekip, Sheet, Ay/Yıl
+- ✅ **Gelişmiş Sıralama:** 7 farklı sıralama seçeneği
+- 🚧 **TXT Dosyası Desteği:** (FAZE 9 - Planlanıyor)
+- 🚧 **EXE Derleme:** (FAZE 11 - Planlanıyor)
 
 ---
 
@@ -260,9 +262,9 @@ Bu proje şu anda geliştirme aşamasındadır. Lisans bilgileri yakında eklene
 
 Sorularınız veya önerileriniz için:
 
-- **Proje Sahibi:** [İsim]
-- **E-posta:** [E-posta adresi]
-- **GitHub:** [GitHub profili]
+- **Proje Sahibi:** Hürcan
+- **GitHub:** [Hrcan](https://github.com/Hrcan)
+- **Repository:** [github.com/Hrcan/H](https://github.com/Hrcan/H)
 
 ---
 
@@ -272,6 +274,17 @@ Bu projeyi geliştirmede yardımcı olan herkese teşekkürler!
 
 ---
 
-**Son Güncelleme:** 2026-03-03  
-**Versiyon:** 0.1.0  
-**Durum:** Aktif Geliştirme 🚀
+## 📈 İstatistikler
+
+- **Toplam Kod:** 3400+ satır
+- **Modül Sayısı:** 7 adet
+- **Test Dosyası:** 6 adet
+- **Commit Sayısı:** 22+
+- **Backup:** 8 adet
+- **İlerleme:** %65 (FAZE 1-6 Tamamlandı)
+
+---
+
+**Son Güncelleme:** 2026-03-04  
+**Versiyon:** 2.0.0  
+**Durum:** 🚀 Aktif Geliştirme - Major Özellikler Eklendi!
