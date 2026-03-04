@@ -7,17 +7,65 @@
 
 ## [Unreleased] - Geliştirme Aşamasında
 
-### Planlanıyor (v1.2) - Log Sistemi ⭐ ÖNEMLİ
-- Logger modülü (dosya ve konsol)
-- Log seviyeleri (DEBUG, INFO, WARNING, ERROR)
-- Log görüntüleme ekranı
-- Log filtreleme ve arama
-
 ### Planlanıyor (v2.0+)
 - Uzun İşler Detay Sayfası (FAZE 6)
 - Tarih/Ay global filtreleme (FAZE 7)
 - TXT dosyası desteği (FAZE 9)
 - EXE derleme (FAZE 11)
+
+---
+
+## [1.2.0] - 2026-03-04 ✅ TAMAMLANDI - LOG SİSTEMİ ⭐
+
+### Eklenenler ✨
+- **Logger Modülü (YENİ! CORE FEATURE)**
+  - `src/core/logger.py` - 260+ satır profesyonel logger sınıfı
+  - AppLogger singleton pattern ile tasarlandı
+  - Renkli konsol çıktısı (colorama)
+  - Rotating file handler (10MB, 5 backup dosyası)
+  - 5 log seviyesi: DEBUG, INFO, WARNING, ERROR, CRITICAL
+  - Otomatik tarihli log dosyaları (logs/ExcelApp_YYYYMMDD.log)
+  
+- **Log Görüntüleme Sayfası (YENİ SAYFA!)**
+  - `src/ui/log_page.py` - 330+ satır
+  - Renkli log görüntüleme (INFO: yeşil, WARNING: turuncu, ERROR: kırmızı)
+  - Log seviye filtresi (TÜM, DEBUG, INFO, WARNING, ERROR, CRITICAL)
+  - Metin arama/filtreleme
+  - Otomatik yenileme (5 saniye)
+  - Log temizleme butonu
+  - Modern dark theme tasarım
+  
+- **MainWindow Entegrasyonu**
+  - LogPage StackedWidget'a eklendi (Index 3)
+  - Menüye "Log Görüntüleme" eklendi
+  - Klavye kısayolu: Ctrl+L
+  - _go_to_log_page() fonksiyonu eklendi
+
+### Değiştirililer 🔄
+- MainWindow menü yapısı güncellendiü (Log menüsü eklendi)
+- StackedWidget sayfaları yeniden düzenlendi (Log = Index 3)
+
+### Teknik Detaylar 🔧
+- **Logger Özellikleri:**
+  - Thread-safe singleton pattern
+  - Dosya rotasyonu (10MB limit, 5 yedek)
+  - UTF-8 encoding desteği
+  - Timestamp formatı: 'YYYY-MM-DD HH:MM:SS'
+  - Konsol renkleri: Yeşil (INFO), Sarı (WARNING), Kırmızı (ERROR)
+  
+- **LogPage Özellikleri:**
+  - QTableWidget ile log görüntüleme
+  - QTimer ile otomatik yenileme (5000ms)
+  - Seviye bazlı renk kodlama
+  - Gerçek zamanlı filtreleme
+  - Log dosyası boyutu gösterimi
+
+### Test Durumu ✅
+- Logger modülü test edildi ve çalışıyor
+- LogPage test edildi ve çalışıyor
+- MainWindow entegrasyonu tamamlandı
+- Git commit: 859844b
+- GitHub push: BAŞARILI ✅
 
 ---
 
