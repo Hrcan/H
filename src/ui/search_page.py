@@ -112,15 +112,18 @@ class SearchPage(QWidget):
         jcl_layout.addWidget(self.jcl_input)
         layout.addLayout(jcl_layout)
         
-        # Ekip seçimi - DÜZELTİLMİŞ HIZALAMA (v2.0.1)
+        # Ekip seçimi - TAM DÜZELTİLDİ (v2.1.1)
         ekip_layout = QHBoxLayout()
-        ekip_layout.setSpacing(10)  # Label ve combo arası boşluk
+        ekip_layout.setSpacing(15)  # Daha fazla boşluk
+        ekip_layout.setContentsMargins(0, 10, 0, 0)  # Üst margin ekle
+        
         ekip_label = QLabel("Ekip:")
-        ekip_label.setFixedWidth(140)  # 120'den 140'a artırıldı
+        ekip_label.setFixedWidth(140)
         ekip_label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
         ekip_label_font = QFont()
         ekip_label_font.setBold(True)
         ekip_label.setFont(ekip_label_font)
+        
         self.ekip_combo = QComboBox()
         self.ekip_combo.addItem("Tümü")
         self.ekip_combo.addItem("YGDB011")
@@ -130,23 +133,32 @@ class SearchPage(QWidget):
         self.ekip_combo.addItem("YGDB153")
         self.ekip_combo.addItem("Ana Sistemler SMS")
         self.ekip_combo.addItem("Ana Sistemler VTS")
-        self.ekip_combo.setMinimumHeight(30)
+        self.ekip_combo.setMinimumHeight(35)
+        
         ekip_layout.addWidget(ekip_label)
-        ekip_layout.addWidget(self.ekip_combo)
+        ekip_layout.addWidget(self.ekip_combo, 1)  # Stretch factor ekle
         layout.addLayout(ekip_layout)
         
-        # Excel türü seçimi - DÜZELTİLMİŞ HIZALAMA
+        # Excel türü seçimi - TAM DÜZELTİLDİ (v2.1.1)
         type_layout = QHBoxLayout()
+        type_layout.setSpacing(15)  # Daha fazla boşluk
+        type_layout.setContentsMargins(0, 10, 0, 0)  # Üst margin ekle
+        
         type_label = QLabel("Excel Türü:")
-        type_label.setFixedWidth(120)  # Fixed width ile sabit genişlik
-        type_label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)  # Sağa yasla
+        type_label.setFixedWidth(140)
+        type_label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        type_label_font = QFont()
+        type_label_font.setBold(True)
+        type_label.setFont(type_label_font)
+        
         self.type_combo = QComboBox()
         self.type_combo.addItem("Tümü")
         self.type_combo.addItem("Hatalı İşler")
         self.type_combo.addItem("Uzun İşler")
-        self.type_combo.setMinimumHeight(30)
+        self.type_combo.setMinimumHeight(35)
+        
         type_layout.addWidget(type_label)
-        type_layout.addWidget(self.type_combo)
+        type_layout.addWidget(self.type_combo, 1)  # Stretch factor ekle
         layout.addLayout(type_layout)
         
         # Bilgi mesajı
