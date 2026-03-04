@@ -250,8 +250,8 @@ class UzunIslerPage(QWidget):
     def _load_excel_data(self):
         """Excel dosyasından uzun işleri yükle"""
         try:
-            # Uzun İşler Excel dosyasını yükle
-            uzun_path = "data/excel/SAO_Ana_Sistemler_Uzun_Süren_İsler_(ARALIK_2024).xlsx"
+            # Uzun İşler Excel dosyasını yükle (Dosya adı düzeltildi - v2.0.1)
+            uzun_path = "data/excel/SAO_Sistem_Operasyon_Uzun_Süren_İşler(ARALIK_2024).xlsx"
             self.uzun_df = self.reader.read_uzun_isler(uzun_path)
             
             if self.uzun_df is not None and not self.uzun_df.empty:

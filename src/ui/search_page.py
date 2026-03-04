@@ -112,11 +112,15 @@ class SearchPage(QWidget):
         jcl_layout.addWidget(self.jcl_input)
         layout.addLayout(jcl_layout)
         
-        # Ekip seçimi - DÜZELTİLMİŞ HIZALAMA
+        # Ekip seçimi - DÜZELTİLMİŞ HIZALAMA (v2.0.1)
         ekip_layout = QHBoxLayout()
+        ekip_layout.setSpacing(10)  # Label ve combo arası boşluk
         ekip_label = QLabel("Ekip:")
-        ekip_label.setFixedWidth(120)  # Fixed width ile sabit genişlik
-        ekip_label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)  # Sağa yasla
+        ekip_label.setFixedWidth(140)  # 120'den 140'a artırıldı
+        ekip_label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        ekip_label_font = QFont()
+        ekip_label_font.setBold(True)
+        ekip_label.setFont(ekip_label_font)
         self.ekip_combo = QComboBox()
         self.ekip_combo.addItem("Tümü")
         self.ekip_combo.addItem("YGDB011")
