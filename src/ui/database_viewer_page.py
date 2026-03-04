@@ -23,6 +23,7 @@ import pandas as pd
 # Logger'ı başlat
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from core.logger import get_logger
+from core.database_manager import get_database_manager
 
 logger = get_logger()
 
@@ -251,18 +252,28 @@ class DatabaseViewerPage(QWidget):
         return dataframes
     
     def _refresh_data(self):
-        """Bellek içeriğini yenile"""
+        """Bellek içeriğini yenile ve SQLite'a kaydet"""
         try:
-            # Main window'dan DataFrame'leri al
+            # 1. Main window'dan DataFrame'leri al
             dataframes = self._get_dataframes()
             
-            # Özet bilgiyi güncelle
-            self._update_summary(dataframes)
+            # 2. DataFrame'leri SQLite'a kaydet
+            db = get_database_manager()
+            for name, df in dataframes.items():
+                # Tablo adını temizle
+                table_name = name.replace(' ', '_').replace('(', '').replace(')', '')
+                db.save_dataframe(table_name, df)
             
-            # DataFrame seçiciyi güncelle
-            self._update_selector(dataframes)
+            # 3. SQLite'dan tablo listesini al
+            tables = db.get_table_names()
             
-            logger.info(f"Bellek içeriği yenilendi: {len(dataframes)} DataFrame")
+            # 4. Özet bilgiyi güncelle (SQLite'dan)
+            self._update_summary_from_sqlite(tables)
+            
+            # 5. DataFrame seçiciyi güncelle (SQLite'dan)
+            self._update_selector_from_sqlite(tables)
+            
+            logger.info(f"Bellek ve SQLite yenilendi: {len(dataframes)} DataFrame → {len(tables)} tablo")
             
         except Exception as e:
             logger.error(f"Bellek yenileme hatası: {e}", exc_info=True)
@@ -320,6 +331,64 @@ Veri yüklemek için:
         
         self.summary_text.setPlainText("\n".join(summary_lines))
     
+    def _update_summary_from_sqlite(self, tables):
+        """SQLite'dan özet bilgiyi güncelle"""
+        if not tables:
+            summary = """
+╔══════════════════════════════════════════════════════════╗
+║               SQLite VERİTABANI BOŞTA                   ║
+╚══════════════════════════════════════════════════════════╝
+
+✅ SQLite veritabanında tablo yok.
+💡 Veri yüklemek için Ctrl+1 veya Ctrl+2'ye basın.
+
+Veri yüklemek için:
+  • Ctrl+1 → Hatalı İşler yükle
+  • Ctrl+2 → Uzun İşler yükle
+  • Ctrl+B → Database Viewer'da yenile
+"""
+            self.summary_text.setPlainText(summary)
+            return
+        
+        # Tablolar varsa detaylı bilgi
+        db = get_database_manager()
+        total_rows = 0
+        total_size = 0
+        
+        summary_lines = [
+            "╔══════════════════════════════════════════════════════════╗",
+            "║           SQLite VERİTABANI RAPORU                      ║",
+            "╚══════════════════════════════════════════════════════════╝",
+            ""
+        ]
+        
+        for table in tables:
+            info = db.get_table_info(table)
+            if info:
+                rows = info['rows']
+                cols = info['columns']
+                size_mb = info['size_mb']
+                
+                total_rows += rows
+                total_size = size_mb  # Dosya boyutu paylaşımlı
+                
+                # Tablo adını güzelleştir
+                display_name = table.replace('_', ' ').title()
+                
+                summary_lines.append(f"📊 {display_name}")
+                summary_lines.append(f"   ├─ Satır Sayısı: {rows:,}")
+                summary_lines.append(f"   ├─ Sütun Sayısı: {cols}")
+                summary_lines.append(f"   └─ Durum: ✅ SQLite'da")
+                summary_lines.append("")
+        
+        summary_lines.append("─" * 60)
+        summary_lines.append(f"📈 TOPLAM: {total_rows:,} satır, {total_size:.2f} MB (SQLite)")
+        summary_lines.append(f"📁 Dosya: data/database/excel_data.db")
+        summary_lines.append("")
+        summary_lines.append("💡 Veriler SQLite veritabanında kalıcı olarak saklanıyor")
+        
+        self.summary_text.setPlainText("\n".join(summary_lines))
+    
     def _update_selector(self, dataframes):
         """DataFrame seçiciyi güncelle"""
         self.df_selector.clear()
@@ -335,15 +404,35 @@ Veri yüklemek için:
             for name in dataframes.keys():
                 self.df_selector.addItem(name)
     
+    def _update_selector_from_sqlite(self, tables):
+        """SQLite'dan seçiciyi güncelle"""
+        self.df_selector.clear()
+        
+        if not tables:
+            self.df_selector.addItem("(SQLite boş)")
+            self.df_selector.setEnabled(False)
+            self.df_info_label.setText("❌ SQLite'da tablo yok")
+            self.df_table.setRowCount(0)
+            self.df_table.setColumnCount(0)
+        else:
+            self.df_selector.setEnabled(True)
+            for table in tables:
+                # Tablo adını güzelleştir
+                display_name = table.replace('_', ' ').title()
+                self.df_selector.addItem(display_name)
+    
     def _show_dataframe(self, df_name):
-        """Seçilen DataFrame'i göster"""
-        if df_name == "(Bellek boş)":
+        """Seçilen DataFrame'i göster (SQLite'dan)"""
+        if df_name == "(SQLite boş)" or df_name == "(Bellek boş)":
             return
         
         try:
-            # DataFrame'i bul
-            dataframes = self._get_dataframes()
-            df = dataframes.get(df_name)
+            # Tablo adını geri çevir
+            table_name = df_name.replace(' ', '_').lower()
+            
+            # SQLite'dan oku
+            db = get_database_manager()
+            df = db.query_table(table_name, limit=100)
             
             if df is None or df.empty:
                 self.df_info_label.setText("❌ DataFrame boş veya bulunamadı")

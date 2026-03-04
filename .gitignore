@@ -103,3 +103,9 @@ data/txt/*.txt
 # Environment variables
 .env
 .env.local
+
+# SQLite veritabanı dosyaları
+*.db
+*.sqlite
+*.sqlite3
+data/database/*.db
