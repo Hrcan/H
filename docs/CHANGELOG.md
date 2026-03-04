@@ -7,11 +7,69 @@
 
 ## [Unreleased] - Geliştirme Aşamasında
 
-### Planlanıyor (v2.0+)
-- Uzun İşler Detay Sayfası (FAZE 6)
+### Planlanıyor (v2.1+)
 - Tarih/Ay global filtreleme (FAZE 7)
 - TXT dosyası desteği (FAZE 9)
 - EXE derleme (FAZE 11)
+
+---
+
+## [2.0.0] - 2026-03-04 ✅ TAMAMLANDI - UZUN İŞLER DETAY (FAZE 6) 🎉
+
+### Eklenenler ✨
+- **Uzun İşler Detay Sayfası (YENİ SAYFA!)**
+  - `src/ui/uzun_isler_page.py` - 580+ satır
+  - 96 satır uzun iş verisi otomatik yükleniyor
+  - Modern QTableWidget kullanımı
+  - Turuncu gradient tema (FF6F00 → FF9800)
+  
+- **Filtreleme Özellikleri**
+  - JCL adı filtresi (otomatik arama)
+  - Ekip filtresi (benzersiz ekipler)
+  - **Sheet filtresi (YENİ!)** - 3 sheet: Mesai Saatleri, Tüm Gün Yazılım, Tüm Gün AnaSistemler
+  - Filtre temizleme butonu
+  
+- **Sıralama Özellikleri**
+  - Süre sıralaması (Uzun → Kısa, Kısa → Uzun)
+  - Çalışma sayısı (Çok → Az, Az → Çok)
+  - JCL adı (A → Z, Z → A)
+  - Ekip (A → Z)
+  
+- **Özel Özellikler**
+  - **60+ dakika vurgulama:** Bold turuncu renk
+  - Boş sonuç mesajı
+  - Modern dark theme (turuncu vurgu)
+  
+- **MainWindow Entegrasyonu**
+  - UzunIslerPage StackedWidget'a eklendi (Index 4)
+  - Menüye "Uzun İşler Detay" eklendi
+  - Klavye kısayolu: **Ctrl+2 AKTİF!**
+  - _go_to_uzun_isler_page() fonksiyonu eklendi
+  
+- **Test Dosyası**
+  - `test_uzun_isler_page.py` oluşturuldu
+  - GUI test başarılı (96 satır yüklendi)
+
+### Teknik Detaylar 🔧
+- **Tablo Özellikleri:**
+  - Turuncu gradient başlık (#FF6F00 → #FF9800)
+  - Alternatif satır renkleri (#1e1e1e, #252525)
+  - Hover efektleri (#333333)
+  - 60+ dakika süre kontrolü ve bold vurgu
+  
+- **Veri Yapısı:**
+  - 3 sheet desteği (Mesai, Yazılım, AnaSistemler)
+  - Çalışma süresi (dakika)
+  - Çalışma sayısı (adet)
+  - Ekip bilgisi
+  - Sheet bilgisi
+
+### Test Durumu ✅
+- UzunIslerPage test edildi ve çalışıyor
+- MainWindow entegrasyonu tamamlandı
+- 96 satır veri başarıyla yüklendi
+- Git commit: 717aedc
+- GitHub push: BAŞARILI ✅
 
 ---
 
