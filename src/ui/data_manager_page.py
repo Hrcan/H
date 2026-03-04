@@ -183,7 +183,7 @@ class DataManagerPage(QWidget):
             # Hatalı İşler
             hatali_excel = "data/excel/SAO_Ana_Sistemler_Hatalı_Biten_İsler_Raporu_(ARALIK_2024).xlsx"
             if os.path.exists(hatali_excel):
-                hatali_data = self.reader.read_hatali_isler_excel(hatali_excel)
+                hatali_data = self.reader.read_hatali_isler(hatali_excel)
                 if hatali_data is not None and not hatali_data.empty:
                     row = self.files_table.rowCount()
                     self.files_table.insertRow(row)
@@ -202,7 +202,7 @@ class DataManagerPage(QWidget):
             # Uzun İşler
             uzun_excel = "data/excel/SAO_Sistem_Operasyon_Uzun_Süren_İşler(ARALIK_2024).xlsx"
             if os.path.exists(uzun_excel):
-                uzun_data = self.reader.read_uzun_isler_excel(uzun_excel)
+                uzun_data = self.reader.read_uzun_isler(uzun_excel)
                 if uzun_data is not None and not uzun_data.empty:
                     row = self.files_table.rowCount()
                     self.files_table.insertRow(row)
@@ -296,14 +296,14 @@ class DataManagerPage(QWidget):
             # Hatalı İşler
             hatali_excel = "data/excel/SAO_Ana_Sistemler_Hatalı_Biten_İsler_Raporu_(ARALIK_2024).xlsx"
             if os.path.exists(hatali_excel):
-                hatali_data = self.reader.read_hatali_isler_excel(hatali_excel)
+                hatali_data = self.reader.read_hatali_isler(hatali_excel)
                 if hatali_data is not None and not hatali_data.empty:
                     loaded_count += 1
             
             # Uzun İşler
             uzun_excel = "data/excel/SAO_Sistem_Operasyon_Uzun_Süren_İşler(ARALIK_2024).xlsx"
             if os.path.exists(uzun_excel):
-                uzun_data = self.reader.read_uzun_isler_excel(uzun_excel)
+                uzun_data = self.reader.read_uzun_isler(uzun_excel)
                 if uzun_data is not None and not uzun_data.empty:
                     loaded_count += 1
             
