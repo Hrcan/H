@@ -371,22 +371,25 @@ class MainWindow(QMainWindow):
         title.setAlignment(Qt.AlignCenter)
         layout.addWidget(title)
         
-        # Versiyon
-        version = QLabel("Versiyon 0.3 - PyQt5 Arayüz")
+        # Versiyon (v2.0.1 GÜNCELLENDİ!)
+        version = QLabel("Versiyon 2.0.1 - Major Özellikler Eklendi!")
         version_font = QFont()
         version_font.setPointSize(12)
         version.setFont(version_font)
         version.setAlignment(Qt.AlignCenter)
+        version.setStyleSheet("color: #4CAF50; font-weight: bold;")
         layout.addWidget(version)
         
         # Boşluk
         layout.addStretch(1)
         
-        # Bilgi
+        # Bilgi (v2.0.1 GÜNCELLENDİ!)
         info = QLabel("Hoş geldiniz!\n\nBu uygulama Excel verilerini görüntülemek için geliştirilmiştir.\n\n"
-                     "📊 Hatalı İşler Analizi\n"
-                     "⏱️ Uzun Süren İşler Takibi\n"
-                     "🔍 Gelişmiş Arama ve Filtreleme")
+                     "📊 Hatalı İşler Detay (Ctrl+1) - 46 satır\n"
+                     "⏱️ Uzun İşler Detay (Ctrl+2) - 96 satır\n"
+                     "📝 Log Sistemi (Ctrl+L)\n"
+                     "🔍 Gelişmiş Arama ve Filtreleme\n"
+                     "🎨 Modern Dark Theme")
         info_font = QFont()
         info_font.setPointSize(11)
         info.setFont(info_font)
