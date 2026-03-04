@@ -7,10 +7,51 @@
 
 ## [Unreleased] - Geliştirme Aşamasında
 
-### Planlanıyor (v2.3+)
+### Planlanıyor (v2.4+)
 - Tarih/Ay global filtreleme (FAZE 7)
 - TXT dosyası desteği (FAZE 9)
-- EXE derleme (FAZE 11)
+- İyileştirmeler ve optimizasyonlar
+
+---
+
+## [2.3.0] - 2026-03-04 ✅ TAMAMLANDI - EXCEL YÜKLEME + EXE HAZIR 🚀
+
+### Eklenenler ✨
+- **Excel Manuel Yükleme (Ctrl+O)**
+  - QFileDialog ile dosya seçici eklendi
+  - Hatalı İşler Excel'i algılama ve yükleme
+  - Uzun İşler Excel'i algılama ve yükleme
+  - Sayfa otomatik yenileme
+  - Kullanıcı dostu mesajlar ve uyarılar
+  - Dosya adından türü otomatik algılama
+  
+- **EXE Derleme Altyapısı (FAZE 11)**
+  - `build.spec`: PyInstaller yapılandırması
+  - `BUILD_INSTRUCTIONS.md`: Detaylı derleme talimatları
+  - Tek dosya EXE desteği (--onefile)
+  - Windows GUI modu (konsol kapalı)
+  - Tüm bağımlılıklar paketleniyor (PyQt5, pandas, openpyxl, colorama)
+  - UPX sıkıştırma aktif
+  - data/ ve src/ klasörleri dahil
+
+### Teknik Detaylar 🔧
+- **Dosya Seçici:**
+  - Varsayılan dizin: data/excel
+  - Filtre: *.xlsx, *.xls
+  - Excel türü algılama: "Hatalı" veya "Uzun" kelimesi
+  
+- **EXE Özellikleri:**
+  - Boyut: ~150-200 MB (tüm bağımlılıklar dahil)
+  - Format: Tek EXE dosyası
+  - Taşınabilirlik: %100 (Python gerektirmez)
+  - Derleme: `pyinstaller build.spec`
+
+### Test Durumu ✅
+- Excel manuel yükleme test edildi ve çalışıyor
+- Hatalı ve Uzun İşler Excel'i yükleniyor
+- build.spec oluşturuldu ve hazır
+- Git commit: d68e49e + 694a482
+- GitHub push: BEKLEMEDE
 
 ---
 
