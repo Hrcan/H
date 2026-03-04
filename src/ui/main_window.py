@@ -271,14 +271,14 @@ class MainWindow(QMainWindow):
         # Dosya Menüsü
         file_menu = menubar.addMenu("&Dosya")
         
-        # Excel Yükle - GELİŞTİRİLİYOR (v2.1.3 - Devre Dışı)
-        # load_excel_action = QAction("Excel Yükle...", self)
-        # load_excel_action.setShortcut("Ctrl+O")
-        # load_excel_action.setStatusTip("Excel dosyası yükle")
-        # load_excel_action.setEnabled(False)  # Devre dışı
-        # load_excel_action.triggered.connect(self._load_excel)
-        # file_menu.addAction(load_excel_action)
-        # file_menu.addSeparator()
+        # Excel Yükle (AKTİF - v2.1.4)
+        load_excel_action = QAction("Excel Yükle...", self)
+        load_excel_action.setShortcut("Ctrl+O")
+        load_excel_action.setStatusTip("Excel dosyası yükle")
+        load_excel_action.triggered.connect(self._load_excel)
+        file_menu.addAction(load_excel_action)
+        
+        file_menu.addSeparator()
         
         # Çıkış
         exit_action = QAction("Çıkış", self)
