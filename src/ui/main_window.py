@@ -22,6 +22,7 @@ from .search_page import SearchPage
 from .hatali_isler_page import HataliIslerPage
 from .uzun_isler_page import UzunIslerPage
 from .log_page import LogPage
+from .data_manager_page import DataManagerPage
 
 
 class MainWindow(QMainWindow):
@@ -315,6 +316,13 @@ class MainWindow(QMainWindow):
         
         view_menu.addSeparator()
         
+        # Veri Yönetimi (YENİ! v2.4 - AKTİF!) 🆕
+        data_manager_action = QAction("Veri Yönetimi", self)
+        data_manager_action.setShortcut("Ctrl+D")
+        data_manager_action.setStatusTip("Yüklü verileri görüntüle ve yönet")
+        data_manager_action.triggered.connect(self._go_to_data_manager_page)
+        view_menu.addAction(data_manager_action)
+        
         # Log Görüntüleme (YENİ! v1.2)
         log_action = QAction("Log Görüntüleme", self)
         log_action.setShortcut("Ctrl+L")
@@ -358,6 +366,10 @@ class MainWindow(QMainWindow):
         # Uzun İşler Detay Sayfası (YENİ! v2.0)
         self.uzun_isler_page = UzunIslerPage()
         self.stacked_widget.addWidget(self.uzun_isler_page)  # Index 4
+        
+        # Veri Yönetimi Sayfası (YENİ! v2.4) 🆕
+        self.data_manager_page = DataManagerPage()
+        self.stacked_widget.addWidget(self.data_manager_page)  # Index 5
     
     def _create_home_page(self):
         """Ana sayfa (hoş geldiniz ekranı) oluştur"""
@@ -446,6 +458,13 @@ class MainWindow(QMainWindow):
         """Uzun İşler Detay sayfasına geç (YENİ! v2.0)"""
         self.stacked_widget.setCurrentIndex(4)  # UzunIslerPage index'i
         self.statusBar.showMessage("Uzun İşler Detay sayfası açıldı")
+    
+    def _go_to_data_manager_page(self):
+        """Veri Yönetimi sayfasına geç (YENİ! v2.4) 🆕"""
+        self.stacked_widget.setCurrentIndex(5)  # DataManagerPage index'i
+        self.statusBar.showMessage("Veri Yönetimi sayfası açıldı")
+        # Sayfa her açıldığında yenile
+        self.data_manager_page._load_data_info()
     
     def _load_excel(self):
         """Excel dosyası yükleme (toplu yükleme destekli)"""
